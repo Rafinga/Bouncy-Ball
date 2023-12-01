@@ -13,9 +13,7 @@
 #include "gloo/lights/AmbientLight.hpp"
 #include "gloo/cameras/ArcBallCameraNode.hpp"
 #include "gloo/debug/AxisNode.hpp"
-#include "ParticleNode.hpp"
 #include "IntegratorFactory.hpp"
-#include "PendulumNode.hpp"
 #include "ClothNode.hpp"
 
 
@@ -52,27 +50,13 @@ void SimulationApp::SetupScene() {
   root.AddChild(std::move(point_light_node));
 
 
-  std::unique_ptr<ParticleNode> circular_particle = make_unique<ParticleNode>(
-      make_unique<CircularSystem>(),
-      IntegratorFactory::CreateIntegrator<CircularSystem,ParticleState>(integrator_type_)
-      ,integration_step_);
 
-  std::unique_ptr<PendulumNode> pendulum_node = make_unique<PendulumNode>(
-      make_unique<PendulumSystem>(),
-      IntegratorFactory::CreateIntegrator<PendulumSystem, ParticleState>(integrator_type_)
-      , integration_step_);
   std::unique_ptr<ClothNode> cloth_node = make_unique<ClothNode>(
       make_unique<PendulumSystem>(),
       IntegratorFactory::CreateIntegrator<PendulumSystem, ParticleState>(integrator_type_)
       , integration_step_,40);
  
 
-
-
-
-  root.AddChild(std::move(circular_particle));
-
-  root.AddChild(std::move(pendulum_node));
   root.AddChild(std::move(cloth_node));
 
 

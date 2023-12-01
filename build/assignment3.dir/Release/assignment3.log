@@ -1,0 +1,7 @@
+﻿  Building Custom Rule C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/CMakeLists.txt
+  SimulationApp.cpp
+C:\Users\yoshi\Desktop\mit stuff\third year mit stuff\computer graphics stuff\final project\Bouncy-Ball\assignment_code\assignment3\PendulumSystem.hpp(50,39): warning C4114: same type qualifier used more than once
+C:\Users\yoshi\Desktop\mit stuff\third year mit stuff\computer graphics stuff\final project\Bouncy-Ball\assignment_code\assignment3\PendulumSystem.hpp(21,13): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\yoshi\Desktop\mit stuff\third year mit stuff\computer graphics stuff\final project\Bouncy-Ball\assignment_code\assignment3\PendulumSystem.hpp(38,1): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\yoshi\Desktop\mit stuff\third year mit stuff\computer graphics stuff\final project\Bouncy-Ball\assignment_code\assignment3\PendulumSystem.hpp(41,1): warning C4305: '-=': truncation from 'double' to 'float'
+  assignment3.vcxproj -> C:\Users\yoshi\Desktop\mit stuff\third year mit stuff\computer graphics stuff\final project\Bouncy-Ball\build\Release\assignment3.exe

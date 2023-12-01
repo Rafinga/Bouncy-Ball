@@ -1,0 +1,392 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeDetermineSystem.cmake:211 (message)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      The system is: Windows - 10.0.22621 - AMD64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      MSBuild version 17.7.2+d6990bcfa for .NET Framework
+      Build started 12/1/2023 12:27:49 PM.
+      
+      Project "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\3.27.4\\CompilerIdC\\CompilerIdC.vcxproj" on node 1 (default targets).
+      PrepareForBuild:
+        Creating directory "Debug\\".
+        Creating directory "Debug\\CompilerIdC.tlog\\".
+      InitializeBuildStatus:
+        Creating "Debug\\CompilerIdC.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+        Touching "Debug\\CompilerIdC.tlog\\unsuccessfulbuild".
+      ClCompile:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TC /FC /errorReport:queue CMakeCCompilerId.c
+        CMakeCCompilerId.c
+      Link:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdC.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdC.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdC.lib" /MACHINE:X64 Debug\\CMakeCCompilerId.obj
+        CompilerIdC.vcxproj -> C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\3.27.4\\CompilerIdC\\CompilerIdC.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_C_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_C_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        Deleting file "Debug\\CompilerIdC.tlog\\unsuccessfulbuild".
+        Touching "Debug\\CompilerIdC.tlog\\CompilerIdC.lastbuildstate".
+      Done Building Project "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\3.27.4\\CompilerIdC\\CompilerIdC.vcxproj" (default targets).
+      
+      Build succeeded.
+          0 Warning(s)
+          0 Error(s)
+      
+      Time Elapsed 00:00:02.14
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.vcxproj"
+      
+      The C compiler identification is MSVC, found in:
+        C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/3.27.4/CompilerIdC/CompilerIdC.exe
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      MSBuild version 17.7.2+d6990bcfa for .NET Framework
+      Build started 12/1/2023 12:27:52 PM.
+      
+      Project "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\3.27.4\\CompilerIdCXX\\CompilerIdCXX.vcxproj" on node 1 (default targets).
+      PrepareForBuild:
+        Creating directory "Debug\\".
+        Creating directory "Debug\\CompilerIdCXX.tlog\\".
+      InitializeBuildStatus:
+        Creating "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+        Touching "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild".
+      ClCompile:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
+        CMakeCXXCompilerId.cpp
+      Link:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
+        CompilerIdCXX.vcxproj -> C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\3.27.4\\CompilerIdCXX\\CompilerIdCXX.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        Deleting file "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild".
+        Touching "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate".
+      Done Building Project "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\3.27.4\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (default targets).
+      
+      Build succeeded.
+          0 Warning(s)
+          0 Error(s)
+      
+      Time Elapsed 00:00:00.77
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
+      
+      The CXX compiler identification is MSVC, found in:
+        C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/3.27.4/CompilerIdCXX/CompilerIdCXX.exe
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-6532g4"
+      binary: "C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-6532g4"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-6532g4'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_1e42c.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        MSBuild version 17.7.2+d6990bcfa for .NET Framework
+        Build started 12/1/2023 12:27:53 PM.
+        
+        Project "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6532g4\\cmTC_1e42c.vcxproj" on node 1 (default targets).
+        PrepareForBuild:
+          Creating directory "cmTC_1e42c.dir\\Debug\\".
+          Creating directory "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6532g4\\Debug\\".
+          Creating directory "cmTC_1e42c.dir\\Debug\\cmTC_1e42c.tlog\\".
+        InitializeBuildStatus:
+          Creating "cmTC_1e42c.dir\\Debug\\cmTC_1e42c.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_1e42c.dir\\Debug\\cmTC_1e42c.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_1e42c.dir\\Debug\\\\" /Fd"cmTC_1e42c.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-3.27\\Modules\\CMakeCCompilerABI.c"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.37.32822 for x64
+          CMakeCCompilerABI.c
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_1e42c.dir\\Debug\\\\" /Fd"cmTC_1e42c.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-3.27\\Modules\\CMakeCCompilerABI.c"
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6532g4\\Debug\\cmTC_1e42c.exe" /INCREMENTAL /ILK:"cmTC_1e42c.dir\\Debug\\cmTC_1e42c.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-6532g4/Debug/cmTC_1e42c.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-6532g4/Debug/cmTC_1e42c.lib" /MACHINE:X64  /machine:x64 cmTC_1e42c.dir\\Debug\\CMakeCCompilerABI.obj
+          cmTC_1e42c.vcxproj -> C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6532g4\\Debug\\cmTC_1e42c.exe
+        FinalizeBuildStatus:
+          Deleting file "cmTC_1e42c.dir\\Debug\\cmTC_1e42c.tlog\\unsuccessfulbuild".
+          Touching "cmTC_1e42c.dir\\Debug\\cmTC_1e42c.tlog\\cmTC_1e42c.lastbuildstate".
+        Done Building Project "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6532g4\\cmTC_1e42c.vcxproj" (default targets).
+        
+        Build succeeded.
+            0 Warning(s)
+            0 Error(s)
+        
+        Time Elapsed 00:00:00.76
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-km14d8"
+      binary: "C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-km14d8"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-km14d8'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_9affb.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        MSBuild version 17.7.2+d6990bcfa for .NET Framework
+        Build started 12/1/2023 12:27:54 PM.
+        
+        Project "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-km14d8\\cmTC_9affb.vcxproj" on node 1 (default targets).
+        PrepareForBuild:
+          Creating directory "cmTC_9affb.dir\\Debug\\".
+          Creating directory "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-km14d8\\Debug\\".
+          Creating directory "cmTC_9affb.dir\\Debug\\cmTC_9affb.tlog\\".
+        InitializeBuildStatus:
+          Creating "cmTC_9affb.dir\\Debug\\cmTC_9affb.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_9affb.dir\\Debug\\cmTC_9affb.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_9affb.dir\\Debug\\\\" /Fd"cmTC_9affb.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-3.27\\Modules\\CMakeCXXCompilerABI.cpp"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.37.32822 for x64
+          CMakeCXXCompilerABI.cpp
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_9affb.dir\\Debug\\\\" /Fd"cmTC_9affb.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-3.27\\Modules\\CMakeCXXCompilerABI.cpp"
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-km14d8\\Debug\\cmTC_9affb.exe" /INCREMENTAL /ILK:"cmTC_9affb.dir\\Debug\\cmTC_9affb.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-km14d8/Debug/cmTC_9affb.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-km14d8/Debug/cmTC_9affb.lib" /MACHINE:X64  /machine:x64 cmTC_9affb.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_9affb.vcxproj -> C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-km14d8\\Debug\\cmTC_9affb.exe
+        FinalizeBuildStatus:
+          Deleting file "cmTC_9affb.dir\\Debug\\cmTC_9affb.tlog\\unsuccessfulbuild".
+          Touching "cmTC_9affb.dir\\Debug\\cmTC_9affb.tlog\\cmTC_9affb.lastbuildstate".
+        Done Building Project "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-km14d8\\cmTC_9affb.vcxproj" (default targets).
+        
+        Build succeeded.
+            0 Warning(s)
+            0 Error(s)
+        
+        Time Elapsed 00:00:00.77
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CheckCSourceCompiles.cmake:52 (cmake_check_source_compiles)"
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/FindThreads.cmake:97 (CHECK_C_SOURCE_COMPILES)"
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/FindThreads.cmake:163 (_threads_check_libc)"
+      - "external/src/glfw-3.3.2/CMakeLists.txt:58 (find_package)"
+    checks:
+      - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
+    directories:
+      source: "C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-pfmsyp"
+      binary: "C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-pfmsyp"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
+      CMAKE_MODULE_PATH: "C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/external/src/glfw-3.3.2/CMake/modules"
+    buildResult:
+      variable: "CMAKE_HAVE_LIBC_PTHREAD"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-pfmsyp'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_27e34.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        MSBuild version 17.7.2+d6990bcfa for .NET Framework
+        Build started 12/1/2023 12:27:56 PM.
+        
+        Project "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-pfmsyp\\cmTC_27e34.vcxproj" on node 1 (default targets).
+        PrepareForBuild:
+          Creating directory "cmTC_27e34.dir\\Debug\\".
+          Creating directory "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-pfmsyp\\Debug\\".
+          Creating directory "cmTC_27e34.dir\\Debug\\cmTC_27e34.tlog\\".
+        InitializeBuildStatus:
+          Creating "cmTC_27e34.dir\\Debug\\cmTC_27e34.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_27e34.dir\\Debug\\cmTC_27e34.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_27e34.dir\\Debug\\\\" /Fd"cmTC_27e34.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-pfmsyp\\src.c"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.37.32822 for x64
+          src.c
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_27e34.dir\\Debug\\\\" /Fd"cmTC_27e34.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-pfmsyp\\src.c"
+        C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-pfmsyp\\src.c(1,10): fatal  error C1083: Cannot open include file: 'pthread.h': No such file or directory [C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-pfmsyp\\cmTC_27e34.vcxproj]
+        Done Building Project "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-pfmsyp\\cmTC_27e34.vcxproj" (default targets) -- FAILED.
+        
+        Build FAILED.
+        
+        "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-pfmsyp\\cmTC_27e34.vcxproj" (default target) (1) ->
+        (ClCompile target) -> 
+          C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-pfmsyp\\src.c(1,10): fatal  error C1083: Cannot open include file: 'pthread.h': No such file or directory [C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-pfmsyp\\cmTC_27e34.vcxproj]
+        
+            0 Warning(s)
+            1 Error(s)
+        
+        Time Elapsed 00:00:00.56
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CheckLibraryExists.cmake:69 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/FindThreads.cmake:112 (CHECK_LIBRARY_EXISTS)"
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/FindThreads.cmake:175 (_threads_check_lib)"
+      - "external/src/glfw-3.3.2/CMakeLists.txt:58 (find_package)"
+    checks:
+      - "Looking for pthread_create in pthreads"
+    directories:
+      source: "C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-t8yc8r"
+      binary: "C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-t8yc8r"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
+      CMAKE_MODULE_PATH: "C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/external/src/glfw-3.3.2/CMake/modules"
+    buildResult:
+      variable: "CMAKE_HAVE_PTHREADS_CREATE"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-t8yc8r'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_2f101.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        MSBuild version 17.7.2+d6990bcfa for .NET Framework
+        Build started 12/1/2023 12:27:57 PM.
+        
+        Project "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t8yc8r\\cmTC_2f101.vcxproj" on node 1 (default targets).
+        PrepareForBuild:
+          Creating directory "cmTC_2f101.dir\\Debug\\".
+          Creating directory "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t8yc8r\\Debug\\".
+          Creating directory "cmTC_2f101.dir\\Debug\\cmTC_2f101.tlog\\".
+        InitializeBuildStatus:
+          Creating "cmTC_2f101.dir\\Debug\\cmTC_2f101.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_2f101.dir\\Debug\\cmTC_2f101.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_2f101.dir\\Debug\\\\" /Fd"cmTC_2f101.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t8yc8r\\CheckFunctionExists.c"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.37.32822 for x64
+          CheckFunctionExists.c
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_2f101.dir\\Debug\\\\" /Fd"cmTC_2f101.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t8yc8r\\CheckFunctionExists.c"
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t8yc8r\\Debug\\cmTC_2f101.exe" /INCREMENTAL /ILK:"cmTC_2f101.dir\\Debug\\cmTC_2f101.ilk" /NOLOGO pthreads.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-t8yc8r/Debug/cmTC_2f101.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-t8yc8r/Debug/cmTC_2f101.lib" /MACHINE:X64  /machine:x64 cmTC_2f101.dir\\Debug\\CheckFunctionExists.obj
+        LINK : fatal error LNK1104: cannot open file 'pthreads.lib' [C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t8yc8r\\cmTC_2f101.vcxproj]
+        Done Building Project "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t8yc8r\\cmTC_2f101.vcxproj" (default targets) -- FAILED.
+        
+        Build FAILED.
+        
+        "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t8yc8r\\cmTC_2f101.vcxproj" (default target) (1) ->
+        (Link target) -> 
+          LINK : fatal error LNK1104: cannot open file 'pthreads.lib' [C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-t8yc8r\\cmTC_2f101.vcxproj]
+        
+            0 Warning(s)
+            1 Error(s)
+        
+        Time Elapsed 00:00:00.61
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CheckLibraryExists.cmake:69 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/FindThreads.cmake:112 (CHECK_LIBRARY_EXISTS)"
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/FindThreads.cmake:176 (_threads_check_lib)"
+      - "external/src/glfw-3.3.2/CMakeLists.txt:58 (find_package)"
+    checks:
+      - "Looking for pthread_create in pthread"
+    directories:
+      source: "C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-377fr0"
+      binary: "C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-377fr0"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
+      CMAKE_MODULE_PATH: "C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/external/src/glfw-3.3.2/CMake/modules"
+    buildResult:
+      variable: "CMAKE_HAVE_PTHREAD_CREATE"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-377fr0'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_1af9d.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        MSBuild version 17.7.2+d6990bcfa for .NET Framework
+        Build started 12/1/2023 12:27:57 PM.
+        
+        Project "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-377fr0\\cmTC_1af9d.vcxproj" on node 1 (default targets).
+        PrepareForBuild:
+          Creating directory "cmTC_1af9d.dir\\Debug\\".
+          Creating directory "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-377fr0\\Debug\\".
+          Creating directory "cmTC_1af9d.dir\\Debug\\cmTC_1af9d.tlog\\".
+        InitializeBuildStatus:
+          Creating "cmTC_1af9d.dir\\Debug\\cmTC_1af9d.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_1af9d.dir\\Debug\\cmTC_1af9d.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_1af9d.dir\\Debug\\\\" /Fd"cmTC_1af9d.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-377fr0\\CheckFunctionExists.c"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.37.32822 for x64
+          CheckFunctionExists.c
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_1af9d.dir\\Debug\\\\" /Fd"cmTC_1af9d.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-377fr0\\CheckFunctionExists.c"
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-377fr0\\Debug\\cmTC_1af9d.exe" /INCREMENTAL /ILK:"cmTC_1af9d.dir\\Debug\\cmTC_1af9d.ilk" /NOLOGO pthread.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-377fr0/Debug/cmTC_1af9d.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/yoshi/Desktop/mit stuff/third year mit stuff/computer graphics stuff/final project/Bouncy-Ball/build/CMakeFiles/CMakeScratch/TryCompile-377fr0/Debug/cmTC_1af9d.lib" /MACHINE:X64  /machine:x64 cmTC_1af9d.dir\\Debug\\CheckFunctionExists.obj
+        LINK : fatal error LNK1104: cannot open file 'pthread.lib' [C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-377fr0\\cmTC_1af9d.vcxproj]
+        Done Building Project "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-377fr0\\cmTC_1af9d.vcxproj" (default targets) -- FAILED.
+        
+        Build FAILED.
+        
+        "C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-377fr0\\cmTC_1af9d.vcxproj" (default target) (1) ->
+        (Link target) -> 
+          LINK : fatal error LNK1104: cannot open file 'pthread.lib' [C:\\Users\\yoshi\\Desktop\\mit stuff\\third year mit stuff\\computer graphics stuff\\final project\\Bouncy-Ball\\build\\CMakeFiles\\CMakeScratch\\TryCompile-377fr0\\cmTC_1af9d.vcxproj]
+        
+            0 Warning(s)
+            1 Error(s)
+        
+        Time Elapsed 00:00:00.63
+        
+      exitCode: 1
+...
