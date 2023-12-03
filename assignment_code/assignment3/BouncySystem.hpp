@@ -77,7 +77,7 @@ namespace GLOO {
         std::vector<float> particle_masses_;
         std::vector<std::tuple<int, int, float, float>> springs_; // Each spring stores particle indices, rest length, and stiffness.
 
-        float drag_constant_ = 1;
+        float drag_constant_ = 5;
         float gravitational_constant_ = 9.81;
 
         glm::vec3 floor_normal_ = glm::vec3(0, 1, 0);

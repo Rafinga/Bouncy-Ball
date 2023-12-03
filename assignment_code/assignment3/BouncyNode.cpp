@@ -47,11 +47,17 @@ namespace GLOO {
 			state_.velocities.emplace_back(glm::vec3(0));
 			system_.AddParticle(1.0f);
 		}
-		system_.InitializeIndices(n);
+		state_.positions.emplace_back(center);
+		state_.velocities.emplace_back(glm::vec3(0)); // 
+		system_.AddParticle(1.0f);
+
+		system_.InitializeIndices(n + 1);
 
 		std::unique_ptr<NormalArray> vertex_normals = make_unique<NormalArray>();
 		std::unique_ptr<PositionArray> vertex_positions = make_unique<PositionArray>();
 		std::unique_ptr<IndexArray> line_segment_indices = make_unique<IndexArray>();
+
+		float initial_adjacent_distance = glm::length(state_.positions[1] - state_.positions[0]);
 		for (int i = 0; i < n; ++i) {
 			glm::vec3 translated_position = state_.positions[i] + center;
 			state_.positions[i] = translated_position;
@@ -59,15 +65,23 @@ namespace GLOO {
 			vertex_positions->emplace_back(translated_position);
 			vertex_normals->emplace_back(1, 0, 0);
 
+			if (i != 0) {
+				system_.AddSpring(i - 1, i, initial_adjacent_distance, 300);
+			}
+
 			if (i < n - 1) {
 				line_segment_indices->emplace_back(i);
 				line_segment_indices->emplace_back(i + 1);
+				
 			}
 			else {
 				line_segment_indices->emplace_back(i);
 				line_segment_indices->emplace_back(0); // Connect last point to first point, which is at index 0.
 			}
+			system_.AddSpring(i, n, radius, 500); // The center point's index is n, by construction (the last point in the array)
+
 		}
+		system_.AddSpring(n-1, 0, initial_adjacent_distance, 300); // Connect a spring between the last point and the first point
 
 		std::shared_ptr<PhongShader> shader = std::make_shared<PhongShader>();
 		for (int i = 0; i < state_.positions.size(); i++) {
@@ -93,7 +107,6 @@ namespace GLOO {
 		// This node will be located at index state_.positions.size() of the children nodes.
 		AddChild(std::move(line_segments_node));
 
-
 		//float initial_distance1 = glm::length(initial_position2 - initial_position1);
 		//float initial_distance2 = glm::length(initial_position3 - initial_position2);
 		//float initial_distance3 = glm::length(initial_position4 - initial_position3);
@@ -118,7 +131,7 @@ namespace GLOO {
 			glm::vec3 floor_to_pos_vec = updated_particle_pos - floor_point_;
 			float plane_dot_prdct = glm::dot(floor_normal_, floor_to_pos_vec);
 			if (plane_dot_prdct <= 0) {
-				state_.positions[i].y = floor_point_.y;
+				state_.positions[i].y = floor_point_.y; // TODO: Maybe generalize this to inclined surfaces
 				state_.velocities[i] = glm::vec3(0); // 
 				system_.IndexCollided(i);
 			}
