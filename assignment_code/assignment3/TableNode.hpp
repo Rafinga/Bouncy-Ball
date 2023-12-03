@@ -14,8 +14,16 @@ namespace GLOO {
 
 
     private:
-        std::unique_ptr<VertexObject> TableNode::CreateBasicTable(float sidelenght);
+        void TableNode::CreateBasicTable(float sidelenght);
+        std::shared_ptr<VertexObject> TableNode::CreateBasicPlane(float sidelenght);
+        std::shared_ptr<VertexObject> TableNode::CreateBasicRect(float length, float width);
+
         glm::vec3 normal_direction;
+        void RotateTable();
+        float CalculateRotAngle();
+
+        glm::quat RotationTransform(const glm::vec3& axis, float angle);
+
     };
 }  // namespace GLOO
 

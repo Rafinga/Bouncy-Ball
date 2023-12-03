@@ -72,7 +72,7 @@ namespace GLOO {
         root.AddChild(std::move(circle_bouncy_node)); 
 
 
-        std::unique_ptr<TableNode> table_node = make_unique<TableNode>(glm::vec3(0), 1, glm::vec3(0, 0, 10));
+        std::unique_ptr<TableNode> table_node = make_unique<TableNode>(center, 2, glm::vec3(-1, 1, 0.0));
 
         root.AddChild(std::move(table_node));
     }
