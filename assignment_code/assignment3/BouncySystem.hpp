@@ -20,18 +20,9 @@ namespace GLOO {
 
             float epsilon = 0.000001f;
             for (int i = 0; i < particle_masses_.size(); i++) {
-                // Condition for point to intersect floor
-                //std::cout << "NEW_POSITION[" << i << "]: " << glm::to_string(new_state.positions[i]) << std::endl;
-                glm:: vec3 floor_to_pos_vec = floor_point_ - new_state.positions[i];
-                //std::cout << "floor_point - new_position: " << glm::to_string(floor_to_pos_vec) << "   floor_normal: " << glm::to_string(floor_normal_) << std::endl;
-                //std::cout << "dot_prdct: " << glm::dot(floor_normal_, floor_to_pos_vec) << "\n" << std::endl; // 
-                if ( abs(glm::dot(floor_normal_, (floor_point_ - new_state.positions[i])) ) <= epsilon ) {
-                //    std::cout << "MADE IT HERE!!!" << std::endl;
-                //    new_state.velocities.emplace_back(0); //
-                //    break;
-                //    continue;
-                    //std::cout << "HOW ARE WE HERE??? \n" << std::endl;
-
+                if (collided_indices_[i]) {
+                    new_state.velocities.emplace_back(glm::vec3(0));
+                    continue; // 
                 }
                 glm::vec3& gravitational_force = particle_masses_[i] * glm::vec3(0, -gravitational_constant_, 0);
                 glm::vec3& drag_force = -drag_constant_ * state.velocities[i];
@@ -68,6 +59,20 @@ namespace GLOO {
             springs_.emplace_back(spring);
         }
 
+        void InitializeIndices(int n) {
+            for (int i = 0; i < n; ++i) {
+                collided_indices_.emplace_back(false);
+            }
+        }
+
+        void IndexCollided(int i) {
+            collided_indices_[i] = true;
+        }
+
+        void IndexUncollided(int i) {
+            collided_indices_[i] = false;
+        }
+
     private:
         std::vector<float> particle_masses_;
         std::vector<std::tuple<int, int, float, float>> springs_; // Each spring stores particle indices, rest length, and stiffness.
@@ -77,6 +82,8 @@ namespace GLOO {
 
         glm::vec3 floor_normal_ = glm::vec3(0, 1, 0);
         glm::vec3 floor_point_ = glm::vec3(0, -1, 0);
+
+        std::vector<bool> collided_indices_;
     };
 }  // namespace GLOO
 

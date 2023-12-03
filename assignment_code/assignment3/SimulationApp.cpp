@@ -18,6 +18,7 @@
 #include "ForwardEulerIntegrator.hpp"
 #include "TrapezoidalIntegrator.hpp"
 #include "BouncyNode.hpp"
+#include "TableNode.hpp"
 
 
 namespace GLOO {
@@ -68,6 +69,11 @@ namespace GLOO {
             integration_step_,
             center, radius, n
         );
-        root.AddChild(std::move(circle_bouncy_node)); //
+        root.AddChild(std::move(circle_bouncy_node)); 
+
+
+        std::unique_ptr<TableNode> table_node = make_unique<TableNode>(glm::vec3(0), 1, glm::vec3(0, 0, 10));
+
+        root.AddChild(std::move(table_node));
     }
 }  // namespace GLOO

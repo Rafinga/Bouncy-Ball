@@ -21,12 +21,11 @@ namespace GLOO {
 		glm::vec3 center, float radius, int n)
 		: integrator_(std::move(integrator))
 	{
+
 		current_time_ = 0.0;
 		time_left_over_ = 0.0;
 		integration_step_ = integration_step;
 		std::vector<float> masses;
-
-		//system_ = BouncySystem() // Maybe allow passing in the floor normal and floor point
 
 		floor_normal_ = glm::vec3(0, 1, 0);
 		floor_point_ = glm::vec3(0, -1, 0);
@@ -35,8 +34,8 @@ namespace GLOO {
 		float cos_angle = cos(rotation_radians);
 		float sin_angle = sin(rotation_radians);
 		glm::mat3 rotation_matrix(cos_angle, sin_angle, 0,
-								 -sin_angle, cos_angle, 0,
-								     0,		    0,	    1); // z-coordinate stays fixed, this is for rotation in the xy-plane.
+			-sin_angle, cos_angle, 0,
+			0, 0, 1); // z-coordinate stays fixed, this is for rotation in the xy-plane.
 
 		glm::vec3 initial_point(0, radius, 0);
 		state_.positions.emplace_back(initial_point);
@@ -48,6 +47,7 @@ namespace GLOO {
 			state_.velocities.emplace_back(glm::vec3(0));
 			system_.AddParticle(1.0f);
 		}
+		system_.InitializeIndices(n);
 
 		std::unique_ptr<NormalArray> vertex_normals = make_unique<NormalArray>();
 		std::unique_ptr<PositionArray> vertex_positions = make_unique<PositionArray>();
@@ -62,7 +62,8 @@ namespace GLOO {
 			if (i < n - 1) {
 				line_segment_indices->emplace_back(i);
 				line_segment_indices->emplace_back(i + 1);
-			} else {
+			}
+			else {
 				line_segment_indices->emplace_back(i);
 				line_segment_indices->emplace_back(0); // Connect last point to first point, which is at index 0.
 			}
@@ -113,11 +114,14 @@ namespace GLOO {
 		for (int i = 0; i < state_.positions.size(); i++) {
 			glm::vec3 updated_particle_pos = state_.positions[i];
 
-			float epsilon = 0.000001f;
-			//if (glm::dot(floor_normal_, (floor_point_ - updated_particle_pos)) <= epsilon) {
-			//	//std::cout << "Huh... " << i << std::endl;
-			//	state_.velocities[i] = glm::vec3(0); // 
-			//}
+			//float epsilon = 0.000001f;
+			glm::vec3 floor_to_pos_vec = updated_particle_pos - floor_point_;
+			float plane_dot_prdct = glm::dot(floor_normal_, floor_to_pos_vec);
+			if (plane_dot_prdct <= 0) {
+				state_.positions[i].y = floor_point_.y;
+				state_.velocities[i] = glm::vec3(0); // 
+				system_.IndexCollided(i);
+			}
 
 			new_vertex_positions->emplace_back(updated_particle_pos);
 			Transform& node_transform = GetChild(i).GetTransform();
@@ -128,4 +132,3 @@ namespace GLOO {
 		line_segment_vertex_obj->UpdatePositions(std::move(new_vertex_positions));
 	}
 }
-
