@@ -28,7 +28,9 @@ namespace GLOO {
 			double dt,
 			glm::vec3 center,
 			float radius,
-			unsigned int circumference_partition
+			unsigned int circumference_partition,
+			glm::vec3& throw_speed = glm::vec3(0)
+
 		);
 
 		void Update(double delta_time) override;
@@ -47,21 +49,34 @@ namespace GLOO {
 		bool in_mid_of_t_step = false;
 		ParticleState full_t_step;
 		ParticleState mid_step_start_state;
-		void AddParticle(const glm::vec3& starting_position);
+
+		void AddParticle(const glm::vec3& starting_position, float mass = 1.0f);
 		std::shared_ptr<VertexObject> ball_vertices;
 		void UpdateSystem();
 		void CreateBallSystem();
 
+		bool IsTouchingGround(glm::vec3 pos) const;
+
+
 		void AddStretchSprings();
+		void AddDeformingStretchSprings();
+
 		void AddStructuralSprings();
+		void AddFlexSprings();
+		void AddBounceSprings();
 		void AddCentralSprings();
+
+		void AddSeparatorSprings();
 
 		void ResetSystem();
 
 
 		glm::vec3 center;
+		glm::vec3 throw_speed;
 		float radius;
 		bool prev_released = true;
+		bool stop_pressed = false;
+
 		unsigned int circumference_partition;
 	};
 }  // namespace GLOO
