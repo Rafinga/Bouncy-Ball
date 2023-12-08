@@ -104,7 +104,12 @@ namespace GLOO {
 
 			//}
 			if (touching_ground.at(child_index)) {
-				new_velocity = glm::vec3(0);
+
+				//new_velocity = glm::vec3(0);
+				new_velocity.y  = new_velocity.y >0? new_velocity.y : -new_velocity.y;
+
+
+
 			}
 			current_states->velocities.push_back(new_velocity);
 			child_index++;
