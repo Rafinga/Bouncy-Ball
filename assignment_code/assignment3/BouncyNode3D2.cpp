@@ -53,20 +53,21 @@ namespace GLOO {
 				ParticleState& new_states = integrator->Integrate(*forces, *current_states, start_time, dt);
 				UpdateStates(new_states);
 				start_time += dt;
+				UpdateWireframe();
 			}
 
 
-		//	if (InputManager::GetInstance().IsKeyPressed('R')) {
-		//		if (prev_released) {
-		//			ResetSystem();
-		//		}
-		//		prev_released = false;
-		//	}
-		//	else if (InputManager::GetInstance().IsKeyReleased('R')) {
-		//		prev_released = true;
+			if (InputManager::GetInstance().IsKeyPressed('R')) {
+				if (prev_released) {
+					ResetSystem();
+				}
+				prev_released = false;
+			}
+			else if (InputManager::GetInstance().IsKeyReleased('R')) {
+				prev_released = true;
 
 			}
-		//}
+		}
 	}
 
 
@@ -81,9 +82,9 @@ namespace GLOO {
 		int child_index = 0;
 		for (glm::vec3& new_velocity : new_states.velocities) {
 			
-			//if (IsTouchingGround(current_states->positions.at(child_index))) {
-			//	new_velocity.y  = new_velocity.y >0? new_velocity.y : -new_velocity.y;
-			//}
+			if (IsTouchingGround(current_states->positions.at(child_index))) {
+				new_velocity.y  = new_velocity.y >0? new_velocity.y : -new_velocity.y;
+			}
 			current_states->velocities.push_back(new_velocity);
 
 			GetChild(child_index).GetTransform().SetPosition(current_states->positions.at(child_index));
@@ -103,6 +104,14 @@ namespace GLOO {
 		SetupSphereMesh();
 		forces->SetFloorNormal(floor_normal);
 		forces->SetFloorSurfacePoint(floor_surface_point);
+		AddVertexObject();
+		AddStructuralSprings();
+
+
+
+
+
+
 
 
 
@@ -119,13 +128,17 @@ namespace GLOO {
 
 
 
-	void BouncyNode3D2::AddCentralSprings() {
+	void BouncyNode3D2::AddCentralSprings(IndexArray& spring_indexes) {
 
 
-		float central_stretch_constant = 0.002;
+		float central_stretch_constant = 1.0f;
+		int center_index = GetChildrenCount()-2;
 
-		for (int i = 0; i < circumference_partition; i++) {
-			forces->AddSpring(circumference_partition,i, central_stretch_constant, radius);
+
+		for (int i = 0; i < current_states->positions.size()-1; i++) {
+			forces->AddSpring(center_index,i, central_stretch_constant, radius);
+			//spring_indexes.push_back(i);
+			//spring_indexes.push_back(center_index);
 		}
 	}
 
@@ -134,44 +147,153 @@ namespace GLOO {
 
 		float structural_strength = 500.0f;
 
-		for (int i = 0; i < circumference_partition; i++) {
-			int parent_index = i > 0 ? (i - 1) : circumference_partition - 1;
-			float rest_length = glm::distance(GetChild(i).GetTransform().GetPosition(), GetChild(parent_index).GetTransform().GetPosition());
+		std::unique_ptr<IndexArray> spring_indexes = make_unique<IndexArray>();
 
-			forces->AddSpring(i, parent_index, 50000.0f, rest_length);
+		AddSpringsInSameCircles(structural_strength,*spring_indexes);
+		AddDifferentCircleSprings(20*structural_strength, *spring_indexes);
+		AddCentralSprings(*spring_indexes);
+		//AddDiagonalSprings(structural_strength,*spring_indexes);
+		ball_vertices->UpdateIndices(std::move(spring_indexes));
+	}
+
+
+	void  BouncyNode3D2::AddSpringsInSameCircles(float structural_strength, IndexArray& spring_indexes) {
+		int num_points_on_circle_slice = circumference_partition - 2;
+
+		for (int i = 0; i < GetChildrenCount() - 4; i++) {
+			int relative_index = i % num_points_on_circle_slice;
+
+			if (relative_index == num_points_on_circle_slice / 2 - 1 || relative_index == num_points_on_circle_slice - 1) {
+				continue;
+			}
+
+			float rest_length = glm::distance(current_states->positions.at(i), current_states->positions.at(i + 1));
+
+			forces->AddSpring(i, i + 1, structural_strength, rest_length);
+
+			spring_indexes.push_back(i);
+			spring_indexes.push_back(i + 1);
+
+
 		}
+
+
+
+
+
+		int top_sphere_index = GetChildrenCount() - 4;
+		AddCapSprings(top_sphere_index, structural_strength, 0,spring_indexes);
+
+		int bottom_cap_index = top_sphere_index + 1;
+		AddCapSprings(bottom_cap_index, structural_strength, num_points_on_circle_slice / 2 - 1,spring_indexes);
 
 
 	}
 
-	void BouncyNode3D2::AddFlexSprings(){
+	void BouncyNode3D2::AddDifferentCircleSprings(float structural_strength, IndexArray& spring_indexes) {
+		int num_points_on_circle_slice = circumference_partition - 2;
+
+		int total_num_points = current_states->positions.size()-3;
 
 
-		float flex_strength = 500.0f;
+		for (int i = 0; i < num_points_on_circle_slice; i++) {
 
-		for (int i = 2; i < circumference_partition; i++) {
-			int parent_index = (i - 2) % circumference_partition;
-			float rest_length = glm::distance(GetChild(i).GetTransform().GetPosition(), GetChild(parent_index).GetTransform().GetPosition());
+			int current_index = i;
 
-			forces->AddSpring(i, parent_index, flex_strength, rest_length);
+			while (current_index + num_points_on_circle_slice < GetChildrenCount() - 4) {
+
+				int conncting_index = current_index + num_points_on_circle_slice;
+
+
+
+				const float original_length = glm::distance(current_states->positions.at(current_index), current_states->positions.at(conncting_index));
+
+
+				forces->AddSpring(current_index, conncting_index, structural_strength, original_length);
+
+				spring_indexes.push_back(current_index);
+				spring_indexes.push_back(conncting_index);
+
+				current_index += num_points_on_circle_slice;
+
+
+
+			}
+			int conncting_index = num_points_on_circle_slice - 1 - i;
+			const float original_length = glm::distance(current_states->positions.at(current_index), current_states->positions.at(conncting_index));
+			
+			forces->AddSpring(current_index, conncting_index, structural_strength, original_length);
+			spring_indexes.push_back(current_index);
+			spring_indexes.push_back(conncting_index);
+
+
 		}
-
-
-		int parent_index = circumference_partition-1;
-		float rest_length = glm::distance(GetChild(1).GetTransform().GetPosition(), GetChild(parent_index).GetTransform().GetPosition());
-
-		forces->AddSpring(1, parent_index, flex_strength, rest_length);
-
-
-		parent_index = circumference_partition - 2;
-		rest_length = glm::distance(GetChild(2).GetTransform().GetPosition(), GetChild(parent_index).GetTransform().GetPosition());
-
-		forces->AddSpring(2, parent_index, flex_strength, rest_length);
 	}
 
+	void BouncyNode3D2::AddDiagonalSprings(float structural_strength, IndexArray& spring_indexes) {
+		int num_points_on_circle_slice = circumference_partition - 2;
+
+		int total_num_points = current_states->positions.size() - 3;
+
+
+		for (int i = 0; i < num_points_on_circle_slice-1; i++) {
+
+			int current_index = i;
+
+			while (current_index + num_points_on_circle_slice+1 < GetChildrenCount() - 4) {
+
+				int conncting_index = current_index + num_points_on_circle_slice+1;
 
 
 
+				const float original_length = glm::distance(current_states->positions.at(current_index), current_states->positions.at(conncting_index));
+
+
+				forces->AddSpring(current_index, conncting_index, structural_strength, original_length);
+
+				spring_indexes.push_back(current_index);
+				spring_indexes.push_back(conncting_index);
+
+				current_index += num_points_on_circle_slice;
+
+
+
+			}
+			int conncting_index = num_points_on_circle_slice  - i;
+			const float original_length = glm::distance(current_states->positions.at(current_index), current_states->positions.at(conncting_index));
+
+			forces->AddSpring(current_index, conncting_index, structural_strength, original_length);
+			spring_indexes.push_back(current_index);
+			spring_indexes.push_back(conncting_index);
+
+
+		}
+	}
+
+	void BouncyNode3D2::AddCapSprings(int cap_index, float structural_strength, int left_connected_node_index,IndexArray& spring_indexes) {
+		int num_points_on_circle_slice = circumference_partition - 2;
+		//the  GetChildrenCount() - 3 is when the 2 cap indexes and the center index start
+
+		int right_connected_node_index = num_points_on_circle_slice - 1 - left_connected_node_index;
+		while (left_connected_node_index < GetChildrenCount() - 4) {
+			float rest_length = glm::distance(current_states->positions.at(cap_index), current_states->positions.at(left_connected_node_index));
+			forces->AddSpring(left_connected_node_index, cap_index, structural_strength, rest_length);
+
+
+			float right_rest_length = glm::distance(current_states->positions.at(cap_index), current_states->positions.at(right_connected_node_index));
+			forces->AddSpring(right_connected_node_index, cap_index, structural_strength, rest_length);
+
+
+			spring_indexes.push_back(left_connected_node_index);
+			spring_indexes.push_back(cap_index);
+			spring_indexes.push_back(right_connected_node_index);
+			spring_indexes.push_back(cap_index);
+
+			left_connected_node_index += num_points_on_circle_slice;
+			right_connected_node_index += num_points_on_circle_slice;
+		}
+
+	}
 
 
 
@@ -226,6 +348,8 @@ namespace GLOO {
 			AddParticle(pos + center, 1.0f);
 		}
 
+		AddParticle(center, 1.0f);
+
 	}
 
 	
@@ -259,6 +383,46 @@ namespace GLOO {
 
 	}
 
+
+	void BouncyNode3D2::AddVertexObject() {
+
+		ball_vertices = std::make_shared<VertexObject>();
+		std::unique_ptr<PositionArray> positions = make_unique<PositionArray>();
+		std::unique_ptr<NormalArray> normals = make_unique<NormalArray>();
+		std::unique_ptr<IndexArray> indexes = make_unique<IndexArray>();
+		for (glm::vec3 position : current_states->positions) {
+			positions->push_back(position);
+		}
+
+
+		ball_vertices->UpdatePositions(std::move(positions));
+		ball_vertices->UpdateNormals(std::move(normals));
+		ball_vertices->UpdateIndices(std::move(indexes));
+
+		std::unique_ptr<SceneNode> extra = make_unique<SceneNode>();
+		extra->CreateComponent<RenderingComponent>(ball_vertices);
+
+		extra->GetComponentPtr<RenderingComponent>()->SetDrawMode(DrawMode::Lines);
+		extra->CreateComponent<ShadingComponent>(std::move(make_unique<SimpleShader>()));
+
+
+
+		//extra->SetActive(false);
+
+		AddChild(std::move(extra));
+
+	}
+
+
+	void BouncyNode3D2::UpdateWireframe() {
+		
+		std::unique_ptr<PositionArray> positions = make_unique<PositionArray>();
+		for (glm::vec3 position : current_states->positions) {
+			positions->push_back(position);
+		}
+		ball_vertices->UpdatePositions(std::move(positions));
+
+	}
 
 
 }  // namespace GLOO

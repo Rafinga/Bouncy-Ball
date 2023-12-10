@@ -62,7 +62,7 @@ namespace GLOO {
 
 			glm::vec3 net_accel = net_force / mass ;
 
-			if ( i != state.positions.size()-1 && IsTouchingGround(state.positions[i]) && state.velocities[i].y < 0 ) {
+			if (IsTouchingGround(state.positions[i]) && state.velocities[i].y < 0 ) {
 
 					//new_states.positions.push_back(glm::vec3(0));
 				//	
@@ -93,6 +93,8 @@ namespace GLOO {
 				new_states.positions.push_back(glm::vec3(0));
 				new_states.velocities.push_back(net_accel);
 				continue;
+
+				
 			}
 
 			new_states.positions.push_back(state.velocities.at(i));
@@ -135,7 +137,7 @@ namespace GLOO {
 
 
 			//float dampening_constant = 2*std::pow(spring_const*particle_masses.at(parent_index),0.5);
-			float dampening_constant = 2.5 * std::pow(spring_const * particle_masses.at(parent_index), 0.5);
+			float dampening_constant =64 * std::pow(spring_const * particle_masses.at(parent_index), 0.5);
 
 
 			const float new_size = glm::length(distance_vector);

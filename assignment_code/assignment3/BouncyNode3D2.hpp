@@ -59,9 +59,18 @@ namespace GLOO {
 
 		void AddStructuralSprings();
 		void AddFlexSprings();
-		void AddCentralSprings();
+		void AddCentralSprings(IndexArray& spring_indexes);
+		void UpdateWireframe();
+
+
 
 		void ResetSystem();
+
+		void AddSpringsInSameCircles(float structural_strength, IndexArray& spring_indexes);
+		void AddDifferentCircleSprings(float structural_strength, IndexArray& spring_indexes);
+		void AddDiagonalSprings(float structural_strength, IndexArray& spring_indexes);
+
+		void AddCapSprings(int cap_index, float structural_strength, int left_connected_node_index, IndexArray& spring_indexes);
 
 
 		glm::vec3 center;
@@ -70,10 +79,15 @@ namespace GLOO {
 		bool prev_released = true;
 		bool stop_pressed = false;
 
+
+
 		unsigned int circumference_partition;
 		glm::vec3 floor_normal;
 		glm::vec3 floor_surface_point;
 		std::shared_ptr<ShaderProgram> shader;
+
+
+		void AddVertexObject();
 	};
 }  // namespace GLOO
 
