@@ -20,10 +20,11 @@ namespace GLOO {
 
             float epsilon = 0.000001f;
             for (int i = 0; i < particle_masses_.size(); i++) {
-                if (collided_indices_[i]) {
-                    new_state.velocities.emplace_back(glm::vec3(0));
-                    continue; // 
-                }
+                //if (collided_indices_[i]) {
+                //    std::cout << "got here!!" << std::endl;
+                //    new_state.velocities.emplace_back(glm::vec3(0, 10, 0));
+                //    continue; // 
+                //}
                 glm::vec3& gravitational_force = particle_masses_[i] * glm::vec3(0, -gravitational_constant_, 0);
                 glm::vec3& drag_force = -drag_constant_ * state.velocities[i];
                 glm::vec3& net_spring_force = glm::vec3(0);
