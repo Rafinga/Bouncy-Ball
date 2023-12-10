@@ -45,9 +45,6 @@ namespace GLOO {
 										-sin_angle, 0, cos_angle); // z-coordinate stays fixed, this is for rotation in the xy-plane.
 
 		glm::vec3 current_point(0, radius, 0);  // Construct initial circle
-		//state_.positions.emplace_back(initial_point);
-		//state_.velocities.emplace_back(glm::vec3(0));  //
-		//system_.AddParticle(1.0f);
 		for (int i = 0; i < n - 1; ++i) {
 			glm::vec3 rotated_point = circle_rotation_matrix * current_point;
 			if (i != n / 2 - 1) {
@@ -60,11 +57,9 @@ namespace GLOO {
 		std::cout << 1 << std::endl;
 
 		for (int i = 0; i < n/2 - 1; ++i) {  // Iterate over the number of rotations
-			//std::cout << "BRUH" << std::endl;
 			int current_size = state_.positions.size();
-			for (int j = current_size - (n-2); j < current_size; ++j) {  // Iterate over the last n-2 indices in the state_.positions array
-				//std::cout << "Odd... j: " << j << ", state_.positions.size() - (n-2): " << state_.positions.size() - (n - 2) << std::endl;
-				
+			// Iterate over the last n-2 indices (i.e. the last circle) currently in the state_.positions array
+			for (int j = current_size - (n-2); j < current_size; ++j) {
 				glm::vec3 rotated_point = sphere_rotation_matrix * state_.positions[j];
 				state_.positions.emplace_back(rotated_point);
 				state_.velocities.emplace_back(glm::vec3(0));
@@ -72,15 +67,15 @@ namespace GLOO {
 			}
 		}
 
-		state_.positions.emplace_back(glm::vec3(0, radius, 0));  // Add the top point of the sphere
+		state_.positions.emplace_back(glm::vec3(0, radius, 0));  // Add the top point of the sphere.
 		state_.velocities.emplace_back(glm::vec3(0));
 		system_.AddParticle(1.0f);
 
-		state_.positions.emplace_back(glm::vec3(0, -radius, 0));  // Add the bottom point of the sphere
+		state_.positions.emplace_back(glm::vec3(0, -radius, 0));  // Add the bottom point of the sphere.
 		state_.velocities.emplace_back(glm::vec3(0));
 		system_.AddParticle(1.0f);
 
-		state_.positions.emplace_back(glm::vec3(0, 0, 0));
+		state_.positions.emplace_back(glm::vec3(0, 0, 0));  // Add the center-point of the sphere.
 		state_.velocities.emplace_back(glm::vec3(0));
 		system_.AddParticle(1.0f);
 
@@ -93,17 +88,17 @@ namespace GLOO {
 		// Vertical structural springs
 		int num_points_on_circle = (n - 2);
 		for (int i = 0; i < state_.positions.size() - 3; ++i) {
-			//system_.AddSpring(i, state_.positions.size() - 3, radius, 100);  // Pressure springs
-
+			// Sprigns from the top-point and bottom-point are handled separately in the next two for-loops.
 			if ((i % num_points_on_circle) == n / 2 - 2 || (i % num_points_on_circle) == num_points_on_circle - 1) continue;
 
 			float rest_length = glm::length(state_.positions[i + 1] - state_.positions[i]);
 			system_.AddSpring(i, i + 1, rest_length, 1000);  // Structural springs ("downwards" along a single circle)
 
-			line_segment_indices->emplace_back(i);
+			line_segment_indices->emplace_back(i);  // Render "vertical" structural springs
 			line_segment_indices->emplace_back(i + 1);
 		}
 
+		//  Handle springs from top-point to each point on the "highest" horizontal ring.
 		int top_point_index = state_.positions.size() - 3;
 		float top_rest_length = glm::length(state_.positions[top_point_index] - state_.positions[0]);
 		for (int i = 0; i < state_.positions.size() - 3; i = i + num_points_on_circle) {
@@ -117,6 +112,7 @@ namespace GLOO {
 			line_segment_indices->emplace_back(i + n - 3);
 		}
 
+		//  Handle springs from bottom-point to each point on the "lowest" horizontal ring.
 		int bottom_point_index = state_.positions.size() - 2;
 		float bottom_rest_length = glm::length(state_.positions[bottom_point_index] - state_.positions[num_points_on_circle/2 - 1]);
 		for (int i = n/2 - 2; i < state_.positions.size() - 3; i = i + num_points_on_circle) {
@@ -134,16 +130,15 @@ namespace GLOO {
 		// Horizontal structural springs
 		for (int i = 0; i < state_.positions.size() - 3; ++i) { 
 			int next_i = i + num_points_on_circle;
-			if (next_i >= state_.positions.size() - 3) {
+			if (next_i >= state_.positions.size() - 3) {  // The edge-case for when we're wrapping around
+				// Need to subtract num_points_on_circle - 1 because the orientation of the next-circle over flips.
 				next_i = num_points_on_circle - 1 - (next_i % num_points_on_circle);
-
-				std::cout << "n - 2: " << n - 2 << ", i: " << i << ", next_i: " << next_i << ", positions.size(): " << state_.positions.size() << std::endl;
 			}
 
 			float rest_length = glm::length(state_.positions[next_i] - state_.positions[i]);
 			system_.AddSpring(i, next_i, rest_length, 1000);
 
-			line_segment_indices->emplace_back(i);
+			line_segment_indices->emplace_back(i);  // Render "horizontal" structural springs
 			line_segment_indices->emplace_back(next_i);
 		}
 
@@ -166,6 +161,9 @@ namespace GLOO {
 
 		// Diagonal structural springs
 		for (int i = 0; i < state_.positions.size() - 3; ++i) {
+			//  We don't want to add bottom-diagonal springs if our bottom_diagonal_i index is the same as either
+			//  the bottom or top point of the sphere (corresponding to the first and second conditionals in the `if`,
+			//  respectively.
 			if (i % num_points_on_circle != n/2 - 2 && (i % num_points_on_circle) != num_points_on_circle - 1) {
 				int bottom_diagonal_i = i + num_points_on_circle + 1;
 				if (bottom_diagonal_i >= state_.positions.size() - 3) {
@@ -180,6 +178,9 @@ namespace GLOO {
 				line_segment_indices->emplace_back(bottom_diagonal_i);
 			}
 
+			//  We don't want to add top-diagonal springs if our bottom_diagonal_i index is the same as either
+			//  the top or bottom point of the sphere (corresponding to the first and second conditionals in the `if`,
+			//  respectively.
 			if (i % num_points_on_circle != 0 && (i % num_points_on_circle) != n/2 - 1) {
 				int top_diagonal_i = i + num_points_on_circle - 1;
 				if (top_diagonal_i >= state_.positions.size() - 3) {
@@ -194,7 +195,6 @@ namespace GLOO {
 		}
 
 
-		//float initial_adjacent_distance = glm::length(state_.positions[1] - state_.positions[0]);
 		for (int i = 0; i < state_.positions.size(); ++i) {
 			glm::vec3 original_position = state_.positions[i];
 			glm::vec3 translated_position = original_position + center;
@@ -204,44 +204,11 @@ namespace GLOO {
 			vertex_normals->emplace_back(original_position);
 		}
 
-		//	initial_heights_.emplace_back(translated_position);
-		//	falling_.emplace_back(true);
-		//	initial_height_set_.emplace_back(true);
-		//	vertex_positions->emplace_back(translated_position);
-		//	vertex_normals->emplace_back(1, 0, 0);
-
-		//	//if (i != 0) {
-		//	//	//system_.AddSpring(i - 1, i, initial_adjacent_distance, 300);
-		//	//}
-
-		//	if (i < n - 1) {
-		//		line_segment_indices->emplace_back(i);
-		//		line_segment_indices->emplace_back(i + 1);
-
-		//	}
-		//	else {
-		//		line_segment_indices->emplace_back(i);
-		//		line_segment_indices->emplace_back(0); // Connect last point to first point, which is at index 0.
-		//	}
-		//	//system_.AddSpring(i, n, radius, 500); // The center point's index is n, by construction (the last point in the array)
-		//	collided_indices_.emplace_back(0);
-		//}
-		//system_.AddSpring(n-1, 0, initial_adjacent_distance, 300); // Connect a spring between the last point and the first point
-		//collided_indices_.emplace_back(0);
-		//std::cout << 2 << std::endl;
-		//for (int i = 0; i < n; ++i) {
-		//	if (n == 1) break;
-		//	for (int j = i + 1; j < n; ++j) {
-		//		float initial_distance = glm::length(state_.positions[j] - state_.positions[i]);
-		//		system_.AddSpring(i, j, initial_distance, 100); //
-		//	}
-		//}
-
 		std::shared_ptr<SimpleShader> shader = std::make_shared<SimpleShader>();
 		for (int i = 0; i < state_.positions.size(); i++) {
 			std::unique_ptr<VertexObject> sphere_mesh = PrimitiveFactory::CreateSphere(0.035f, 25, 25);
 			auto rendering_node = make_unique<SceneNode>();
-			//rendering_node->CreateComponent<RenderingComponent>(std::move(sphere_mesh));  //
+			//rendering_node->CreateComponent<RenderingComponent>(std::move(sphere_mesh));  // Render the vertices as spheres.
 			//rendering_node->CreateComponent<ShadingComponent>(shader);
 			rendering_node->GetTransform().SetPosition(state_.positions[i]);
 			AddChild(std::move(rendering_node));
@@ -264,81 +231,81 @@ namespace GLOO {
 	}
 
 	void BouncyNode3D::Update(double delta_time) {
-		////std::cout << 4 << std::endl;
-		//double time_after_steps = current_time_ + delta_time + time_left_over_;
-		//while (current_time_ + integration_step_ <= time_after_steps) {
-		//	state_ = integrator_->Integrate(system_, state_, current_time_, integration_step_);
-		//	current_time_ += integration_step_;
-		//}
-		//time_left_over_ = time_after_steps - current_time_;
+		//std::cout << 4 << std::endl;
+		double time_after_steps = current_time_ + delta_time + time_left_over_;
+		while (current_time_ + integration_step_ <= time_after_steps) {
+			state_ = integrator_->Integrate(system_, state_, current_time_, integration_step_);
+			current_time_ += integration_step_;
+		}
+		time_left_over_ = time_after_steps - current_time_;
 
-		//std::unique_ptr<PositionArray> new_vertex_positions = make_unique<PositionArray>();
-		//for (int i = 0; i < state_.positions.size(); i++) {
-		//	glm::vec3 updated_particle_pos = state_.positions[i];
+		std::unique_ptr<PositionArray> new_vertex_positions = make_unique<PositionArray>();
+		for (int i = 0; i < state_.positions.size(); i++) {
+			glm::vec3 updated_particle_pos = state_.positions[i];
 
-		//	//float epsilon = 0.000001f;
-		//	//if (glm::length(state_.velocities[i]) <= epsilon) {
-		//	//	std::cout << "odd!!!" << std::endl; // 
-		//	//	initial_heights_[i] = updated_particle_pos;
-		//	//}
+			//float epsilon = 0.000001f;
+			//if (glm::length(state_.velocities[i]) <= epsilon) {
+			//	std::cout << "odd!!!" << std::endl; // 
+			//	initial_heights_[i] = updated_particle_pos;
+			//}
 
-		//	//if (state_.velocities[i].y > 0) {
-		//	//	falling_[i] = false;
-		//	//}
-		//	//else if (!initial_height_set_[i]) {
-		//	//	if (state_.positions[i].y - floor_point_.y > 0.00001) {
-		//	//		std::cout << "yay!!! " << state_.positions[i].y << " " << state_.positions[i].y << " " << (state_.positions[i].y > floor_point_.y) << std::endl;
-		//	//	}
-		//	//	initial_heights_[i] = updated_particle_pos;
-		//	//	initial_height_set_[i] = true;
-		//	//}
+			//if (state_.velocities[i].y > 0) {
+			//	falling_[i] = false;
+			//}
+			//else if (!initial_height_set_[i]) {
+			//	if (state_.positions[i].y - floor_point_.y > 0.00001) {
+			//		std::cout << "yay!!! " << state_.positions[i].y << " " << state_.positions[i].y << " " << (state_.positions[i].y > floor_point_.y) << std::endl;
+			//	}
+			//	initial_heights_[i] = updated_particle_pos;
+			//	initial_height_set_[i] = true;
+			//}
 
-		//	//float epsilon = 0.000001f;
-		//	glm::vec3 floor_to_pos_vec = updated_particle_pos - floor_point_;
-		//	float plane_dot_prdct = glm::dot(floor_normal_, floor_to_pos_vec);
+			//float epsilon = 0.000001f;
+			glm::vec3 floor_to_pos_vec = updated_particle_pos - floor_point_;
+			float plane_dot_prdct = glm::dot(floor_normal_, floor_to_pos_vec);
 
-		//	//if (collided_indices_[i] > 1) {
-		//	//	//std::cout << "bruh... " << i << std::endl;
-		//	//	collided_indices_[i] -= 1;
-		//	//}
-		//	//else if (collided_indices_[i]) {
-		//	//	collided_indices_[i] = 0;
-		//	//	system_.IndexUncollided(i);
-		//	//}
-		//	//if (collided_indices_[i]) {
-		//	//	collided_indices_[i] = 0; //
-		//	//	system_.IndexUncollided(i);
-		//	//}
+			//if (collided_indices_[i] > 1) {
+			//	//std::cout << "bruh... " << i << std::endl;
+			//	collided_indices_[i] -= 1;
+			//}
+			//else if (collided_indices_[i]) {
+			//	collided_indices_[i] = 0;
+			//	system_.IndexUncollided(i);
+			//}
+			//if (collided_indices_[i]) {
+			//	collided_indices_[i] = 0; //
+			//	system_.IndexUncollided(i);
+			//}
 
-		//	//float epsilon = 0.000001f;
-		//	//float epsilon = 1.0f;
-		//	if (plane_dot_prdct <= 0) {
-		//		//std::cout << "here" << std::endl;
-		//		state_.positions[i].y = floor_point_.y; // TODO: Maybe generalize this to inclined surfaces
+			//float epsilon = 0.000001f;
+			//float epsilon = 1.0f;
+			if (plane_dot_prdct <= 0) {
+				//std::cout << "here" << std::endl;
+				state_.positions[i].y = floor_point_.y; // TODO: Maybe generalize this to inclined surfaces
 
-		//		//glm::vec3 velocity_before_bounce = glm::vec3(0, sqrt(2 * g * (initial_heights_[i].y - floor_point_.y)), 0); // 
+				//glm::vec3 velocity_before_bounce = glm::vec3(0, sqrt(2 * g * (initial_heights_[i].y - floor_point_.y)), 0); // 
 
-		//		//glm::vec3 velocity_before_bounce = state_.velocities[i];
-		//		//state_.velocities[i] = coefficient_of_restitution_ * velocity_before_bounce;
-		//		//std::cout << "here...?" << std::endl;
-		//		state_.velocities[i] = glm::vec3(0);
-		//		//std::cout << "bruh.... " << g << " " << initial_heights_[i].y - floor_point_.y << " " << 2 * g * (initial_heights_[i].y - floor_point_.y) << " " << sqrt(2 * g * (initial_heights_[i].y - floor_point_.y)) << " " << glm::to_string(state_.velocities[i]) << std::endl;
-		//		//state_.velocities[i] = glm::vec3(0);
-		//		//system_.IndexCollided(i);
-		//		//collided_indices_[i] = 1;
+				//glm::vec3 velocity_before_bounce = state_.velocities[i];
+				//state_.velocities[i] = coefficient_of_restitution_ * velocity_before_bounce;
+				//std::cout << "here...?" << std::endl;
+				state_.velocities[i] = glm::vec3(0);
+				//std::cout << "bruh.... " << g << " " << initial_heights_[i].y - floor_point_.y << " " << 2 * g * (initial_heights_[i].y - floor_point_.y) << " " << sqrt(2 * g * (initial_heights_[i].y - floor_point_.y)) << " " << glm::to_string(state_.velocities[i]) << std::endl;
+				//state_.velocities[i] = glm::vec3(0);
+				//system_.IndexCollided(i);
+				//collided_indices_[i] = 1;
 
-		//		//initial_height_set_[i] = false;
-		//	}
+				//initial_height_set_[i] = false;
+			}
 
-		//	//std::cout << 5 << std::endl;
-		//	new_vertex_positions->emplace_back(updated_particle_pos);
-		//	Transform& node_transform = GetChild(i).GetTransform();
-		//	node_transform.SetPosition(updated_particle_pos);
-		//}
-		////std::cout << 6 << std::endl;
-		////VertexObject* line_segment_vertex_obj =
-		////	GetChild(state_.positions.size()).GetComponentPtr<RenderingComponent>()->GetVertexObjectPtr();  //
-		////line_segment_vertex_obj->UpdatePositions(std::move(new_vertex_positions));
-		////std::cout << "finished!" << std::endl;
+			//std::cout << 5 << std::endl;
+			new_vertex_positions->emplace_back(updated_particle_pos);
+			Transform& node_transform = GetChild(i).GetTransform();
+			node_transform.SetPosition(updated_particle_pos);
+		}
+		//std::cout << 6 << std::endl;
+		//VertexObject* line_segment_vertex_obj =
+		//	GetChild(state_.positions.size()).GetComponentPtr<RenderingComponent>()->GetVertexObjectPtr();  //
+		//line_segment_vertex_obj->UpdatePositions(std::move(new_vertex_positions));
+		//std::cout << "finished!" << std::endl;
 	}
 }
