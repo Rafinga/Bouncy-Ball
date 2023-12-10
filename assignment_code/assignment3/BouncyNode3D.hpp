@@ -4,12 +4,14 @@
 #include "ParticleState.hpp"
 #include "gloo/SceneNode.hpp"
 #include "BouncySystem.hpp"
+#include "BouncySystem2.hpp"
 #include "IntegratorBase.hpp"
 
 namespace GLOO {
     class BouncyNode3D : public SceneNode {
     public:
         BouncyNode3D(std::unique_ptr<IntegratorBase<BouncySystem, ParticleState>> integrator,
+        //BouncyNode3D(std::unique_ptr<IntegratorBase<BouncySystem2, ParticleState>> integrator,
             double integration_step,
             glm::vec3 center, float radius, int n);
 
@@ -17,7 +19,9 @@ namespace GLOO {
 
     private:
         std::unique_ptr<IntegratorBase<BouncySystem, ParticleState>> integrator_;
+        //std::unique_ptr<IntegratorBase<BouncySystem2, ParticleState>> integrator_;
         BouncySystem system_;
+        //BouncySystem2 system_;
         ParticleState state_;
         double current_time_;
         double time_left_over_;
