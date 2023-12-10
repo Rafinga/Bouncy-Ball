@@ -35,12 +35,12 @@ namespace GLOO {
 
 
 
-		std::unique_ptr<VertexObject> sphere_mesh = PrimitiveFactory::CreateSphere(0.035f, 25, 25);
-		std::unique_ptr<SceneNode> rendering_node = make_unique<SceneNode>();
-		rendering_node->CreateComponent<RenderingComponent>(std::move(sphere_mesh));
-		rendering_node->CreateComponent<ShadingComponent>(shader);
-		rendering_node->GetTransform().SetPosition(starting_position);
-		AddChild(std::move(rendering_node));
+		//std::unique_ptr<VertexObject> sphere_mesh = PrimitiveFactory::CreateSphere(0.035f, 25, 25);
+		//std::unique_ptr<SceneNode> rendering_node = make_unique<SceneNode>();
+		//rendering_node->CreateComponent<RenderingComponent>(std::move(sphere_mesh));
+		//rendering_node->CreateComponent<ShadingComponent>(shader);
+		//rendering_node->GetTransform().SetPosition(starting_position);
+		//AddChild(std::move(rendering_node));
 	}
 
 	void BouncyNode3D2::Update(double delta_time) {
@@ -83,11 +83,11 @@ namespace GLOO {
 		for (glm::vec3& new_velocity : new_states.velocities) {
 			
 			if (IsTouchingGround(current_states->positions.at(child_index))) {
-				new_velocity.y  = new_velocity.y >0? new_velocity.y : -new_velocity.y;
+				new_velocity.y  = new_velocity.y >0? new_velocity.y : 0;
 			}
 			current_states->velocities.push_back(new_velocity);
 
-			GetChild(child_index).GetTransform().SetPosition(current_states->positions.at(child_index));
+			//GetChild(child_index).GetTransform().SetPosition(current_states->positions.at(child_index));
 
 
 			child_index++;
@@ -131,8 +131,8 @@ namespace GLOO {
 	void BouncyNode3D2::AddCentralSprings(IndexArray& spring_indexes) {
 
 
-		float central_stretch_constant = 1.0f;
-		int center_index = GetChildrenCount()-2;
+		float central_stretch_constant = 0.02f;
+		int center_index = current_states->positions.size() - 1;
 
 
 		for (int i = 0; i < current_states->positions.size()-1; i++) {
@@ -145,14 +145,14 @@ namespace GLOO {
 	void BouncyNode3D2::AddStructuralSprings() {
 
 
-		float structural_strength = 500.0f;
+		float structural_strength = 50.0f;
 
 		std::unique_ptr<IndexArray> spring_indexes = make_unique<IndexArray>();
 
 		AddSpringsInSameCircles(structural_strength,*spring_indexes);
 		AddDifferentCircleSprings(20*structural_strength, *spring_indexes);
 		AddCentralSprings(*spring_indexes);
-		//AddDiagonalSprings(structural_strength,*spring_indexes);
+		AddDiagonalSprings(0.01*structural_strength,*spring_indexes);
 		ball_vertices->UpdateIndices(std::move(spring_indexes));
 	}
 
@@ -160,7 +160,7 @@ namespace GLOO {
 	void  BouncyNode3D2::AddSpringsInSameCircles(float structural_strength, IndexArray& spring_indexes) {
 		int num_points_on_circle_slice = circumference_partition - 2;
 
-		for (int i = 0; i < GetChildrenCount() - 4; i++) {
+		for (int i = 0; i <current_states->positions.size() - 3; i++) {
 			int relative_index = i % num_points_on_circle_slice;
 
 			if (relative_index == num_points_on_circle_slice / 2 - 1 || relative_index == num_points_on_circle_slice - 1) {
@@ -181,7 +181,7 @@ namespace GLOO {
 
 
 
-		int top_sphere_index = GetChildrenCount() - 4;
+		int top_sphere_index = current_states->positions.size() - 3;
 		AddCapSprings(top_sphere_index, structural_strength, 0,spring_indexes);
 
 		int bottom_cap_index = top_sphere_index + 1;
@@ -200,7 +200,7 @@ namespace GLOO {
 
 			int current_index = i;
 
-			while (current_index + num_points_on_circle_slice < GetChildrenCount() - 4) {
+			while (current_index + num_points_on_circle_slice < current_states->positions.size() - 3) {
 
 				int conncting_index = current_index + num_points_on_circle_slice;
 
@@ -240,7 +240,7 @@ namespace GLOO {
 
 			int current_index = i;
 
-			while (current_index + num_points_on_circle_slice+1 < GetChildrenCount() - 4) {
+			while (current_index + num_points_on_circle_slice+1 < current_states->positions.size() - 3) {
 
 				int conncting_index = current_index + num_points_on_circle_slice+1;
 
@@ -255,19 +255,52 @@ namespace GLOO {
 				spring_indexes.push_back(conncting_index);
 
 				current_index += num_points_on_circle_slice;
+			}
+		}
+		
+
+		//int current_index = num_points_on_circle_slice - 1;
+		//while (current_index + 1 < GetChildrenCount() - 4) {
+
+		//	int conncting_index = current_index + 1;
 
 
+
+		//	const float original_length = glm::distance(current_states->positions.at(current_index), current_states->positions.at(conncting_index));
+		//	
+		//	forces->AddSpring(current_index, conncting_index, structural_strength, original_length);
+
+		//	spring_indexes.push_back(current_index);
+		//	spring_indexes.push_back(conncting_index);
+
+		//	current_index += num_points_on_circle_slice;
+		//	break;
+		//}
+
+
+		for (int i = 1; i < num_points_on_circle_slice; i++) {
+
+			int current_index = i;
+
+			while (current_index + num_points_on_circle_slice - 1 < current_states->positions.size() - 3) {
+
+				int conncting_index = current_index + num_points_on_circle_slice - 1;
+
+
+
+				const float original_length = glm::distance(current_states->positions.at(current_index), current_states->positions.at(conncting_index));
+
+
+				forces->AddSpring(current_index, conncting_index, structural_strength, original_length);
+
+				spring_indexes.push_back(current_index);
+				spring_indexes.push_back(conncting_index);
+
+				current_index += num_points_on_circle_slice;
 
 			}
-			int conncting_index = num_points_on_circle_slice  - i;
-			const float original_length = glm::distance(current_states->positions.at(current_index), current_states->positions.at(conncting_index));
-
-			forces->AddSpring(current_index, conncting_index, structural_strength, original_length);
-			spring_indexes.push_back(current_index);
-			spring_indexes.push_back(conncting_index);
-
-
 		}
+
 	}
 
 	void BouncyNode3D2::AddCapSprings(int cap_index, float structural_strength, int left_connected_node_index,IndexArray& spring_indexes) {
@@ -275,7 +308,7 @@ namespace GLOO {
 		//the  GetChildrenCount() - 3 is when the 2 cap indexes and the center index start
 
 		int right_connected_node_index = num_points_on_circle_slice - 1 - left_connected_node_index;
-		while (left_connected_node_index < GetChildrenCount() - 4) {
+		while (left_connected_node_index < current_states->positions.size() - 3) {
 			float rest_length = glm::distance(current_states->positions.at(cap_index), current_states->positions.at(left_connected_node_index));
 			forces->AddSpring(left_connected_node_index, cap_index, structural_strength, rest_length);
 
