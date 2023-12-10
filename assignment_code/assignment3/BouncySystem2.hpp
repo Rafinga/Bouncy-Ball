@@ -18,7 +18,7 @@ namespace GLOO {
 			float time) const override;
 
 		float g = 9.81;
-		float drag_constant = 0.3;
+		float drag_constant = 0.03;
 
 
 		void AddParticle(const float mass);
