@@ -37,6 +37,42 @@ namespace GLOO {
 
         float g = 9.81;
         float coefficient_of_restitution_ = 0.9f;
+
+        std::vector<int> horizontal_structural_indices_;
+        std::vector<int> vertical_structural_indices_;
+
+        std::vector<int> pressure_indices_;
+
+        std::vector<int> bottom_diagonal_structural_indices_;
+        std::vector<int> top_diagonal_structural_indices_;
+
+        std::vector<glm::vec3> sphere_positions_;
+        std::vector<glm::vec3> sphere_normals_;
+
+        std::vector<int> triangle_indices_;  // Uses bottom-diagonal structural layout
+
+        bool wireframe_enabled_ = true;
+
+        bool horizontal_structurals_active_ = true;
+        bool vertical_structurals_active_ = true;
+        bool pressure_active_ = false;
+        bool bottom_diagonals_active_ = true;
+        bool top_diagonals_active_ = true;
+
+        bool triangles_enabled_ = true;
+        
+        int num_of_children_;
+
+        bool r_prev_released_ = false;
+        bool s_prev_released_ = false;
+        bool t_prev_released_ = false;
+        bool w_prev_released_ = false;
+        bool h_prev_released_ = false;
+        bool v_prev_released_ = false;
+        bool p_prev_released_ = false;
+        bool b_prev_released_ = false;
+        bool o_prev_released_ = false;
+
     };
 }  // namespace GLOO
 
