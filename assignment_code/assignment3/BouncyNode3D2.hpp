@@ -29,6 +29,8 @@ namespace GLOO {
 			glm::vec3 center,
 			float radius,
 			unsigned int circumference_partition,
+			glm::vec3 floor_normal,
+			glm::vec3 floor_surface_point,
 			glm::vec3& throw_speed = glm::vec3(0)
 
 		);
@@ -63,6 +65,11 @@ namespace GLOO {
 		void UpdateWireframe();
 
 
+		glm::vec3 RemovedTableVelocityComp(glm::vec3& velocity);
+
+
+
+
 
 		void ResetSystem();
 
@@ -71,16 +78,18 @@ namespace GLOO {
 		void AddDiagonalSprings(float structural_strength, IndexArray& spring_indexes);
 
 		void AddCapSprings(int cap_index, float structural_strength, int left_connected_node_index, IndexArray& spring_indexes);
-
+		void SetupBasePositions();
 
 		glm::vec3 center;
 		glm::vec3 throw_speed;
 		float radius;
 		bool prev_released = true;
+		bool prev_released2 = true;
 		bool stop_pressed = false;
 
 
-
+		std::unique_ptr<PositionArray> base_positions;
+		std::unique_ptr<PositionArray> base_velocities;
 		unsigned int circumference_partition;
 		glm::vec3 floor_normal;
 		glm::vec3 floor_surface_point;

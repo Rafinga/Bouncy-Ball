@@ -13,15 +13,15 @@
 namespace GLOO {
 	TableNode::TableNode(glm::vec3& center, float sidelength, glm::vec3& normal_direction):normal_direction(glm::normalize(normal_direction)) {
 		
-		GetTransform().SetPosition(center);
 		CreateBasicTable(sidelength);
 		RotateTable();
+		GetTransform().SetPosition(center);
 	}
 
 
 	void TableNode::CreateBasicTable(float sidelenght) {
 
-		float table_height = 0.06;
+		float table_height = 6;
 
 		float pi = 3.1415;
 
@@ -87,7 +87,7 @@ namespace GLOO {
 
 
 		}
-
+		box_node->GetTransform().SetPosition(glm::vec3(0, -table_height / 2, 0));
 
 		AddChild(std::move(box_node));
 
@@ -142,7 +142,7 @@ namespace GLOO {
 	void TableNode::RotateTable() {
 		glm::vec3 default_normal(0, 1.0, 0);
 
-		glm::vec3& rot_axis = glm::cross(default_normal, normal_direction);
+		glm::vec3& rot_axis = glm::normalize(glm::cross(default_normal, normal_direction));
 
 		GetTransform().SetRotation(rot_axis, CalculateRotAngle());
 

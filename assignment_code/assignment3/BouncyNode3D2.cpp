@@ -6,6 +6,7 @@
 #include "gloo/components/MaterialComponent.hpp"
 #include "gloo/InputManager.hpp"
 #include <gloo/shaders/SimpleShader.hpp>
+#include "glm/gtx/string_cast.hpp"
 
 namespace GLOO {
 
@@ -15,15 +16,15 @@ namespace GLOO {
 		glm::vec3 center,
 		float radius,
 		unsigned int circumference_partition,
+		glm::vec3 floor_normal,
+		glm::vec3 floor_surface_point,
 		glm::vec3& throw_speed
 	) :
 		forces(std::move(make_unique<BouncySystem2>())), integrator(std::move(integrator)), dt(dt), circumference_partition(circumference_partition),
-		center(center), radius(radius), throw_speed(throw_speed)
+		center(center), radius(radius),floor_normal(floor_normal),floor_surface_point(floor_surface_point), throw_speed(throw_speed)
 	{
 		current_states = make_unique<ParticleState>();
 		shader = std::make_shared<PhongShader>();
-		floor_normal = glm::vec3(0, 1, 0);
-		floor_surface_point = glm::vec3(0, -1, 0);
 
 		CreateBallSystem();
 	}
@@ -47,14 +48,25 @@ namespace GLOO {
 
 		total_time_elapsed += delta_time;
 
+		if (InputManager::GetInstance().IsKeyPressed('S')) {
+			if (prev_released2) {
+				stop_pressed = !stop_pressed;
+			}
+			prev_released2 = false;
+		}
+		else if (InputManager::GetInstance().IsKeyReleased('S')) {
+			prev_released2  = true;
+		}
+	
+
 		while (start_time + dt < total_time_elapsed) {
 
 			if (!stop_pressed) {
 				ParticleState& new_states = integrator->Integrate(*forces, *current_states, start_time, dt);
 				UpdateStates(new_states);
-				start_time += dt;
 				UpdateWireframe();
 			}
+			start_time += dt;
 
 
 			if (InputManager::GetInstance().IsKeyPressed('R')) {
@@ -67,6 +79,9 @@ namespace GLOO {
 				prev_released = true;
 
 			}
+
+
+
 		}
 	}
 
@@ -83,7 +98,8 @@ namespace GLOO {
 		for (glm::vec3& new_velocity : new_states.velocities) {
 			
 			if (IsTouchingGround(current_states->positions.at(child_index))) {
-				new_velocity.y  = new_velocity.y >0? new_velocity.y : 0;
+				//new_velocity.y  = new_velocity.y >0? new_velocity.y : 0;
+				new_velocity = RemovedTableVelocityComp(new_velocity);
 			}
 			current_states->velocities.push_back(new_velocity);
 
@@ -106,7 +122,7 @@ namespace GLOO {
 		forces->SetFloorSurfacePoint(floor_surface_point);
 		AddVertexObject();
 		AddStructuralSprings();
-
+		SetupBasePositions();
 
 
 
@@ -236,71 +252,31 @@ namespace GLOO {
 		int total_num_points = current_states->positions.size() - 3;
 
 
-		for (int i = 0; i < num_points_on_circle_slice-1; i++) {
+		for (int i = 0; i < total_num_points; ++i) {
+			if (i % num_points_on_circle_slice != circumference_partition / 2 - 2 && (i % num_points_on_circle_slice) != num_points_on_circle_slice - 1) {
+				int bottom_diagonal_i = i + num_points_on_circle_slice + 1;
+				if (bottom_diagonal_i >= total_num_points) {
+					bottom_diagonal_i = num_points_on_circle_slice - 1 - (bottom_diagonal_i % num_points_on_circle_slice);
+				}
+				float bottom_rest_length = glm::distance(current_states->positions[bottom_diagonal_i], current_states->positions[i]);
+				forces->AddSpring(i, bottom_diagonal_i,spring_constant, bottom_rest_length);  
 
-			int current_index = i;
+				spring_indexes.emplace_back(i);
+				spring_indexes.emplace_back(bottom_diagonal_i);
+			}
 
-			while (current_index + num_points_on_circle_slice+1 < current_states->positions.size() - 3) {
+			if (i % num_points_on_circle_slice != 0 && (i % num_points_on_circle_slice) != circumference_partition / 2 - 1) {
+				int top_diagonal_i = i + num_points_on_circle_slice - 1;
+				if (top_diagonal_i >= total_num_points) {
+					top_diagonal_i = num_points_on_circle_slice - 1 - (top_diagonal_i % num_points_on_circle_slice);
+				}
+				float top_rest_length = glm::length(current_states->positions[top_diagonal_i] - current_states->positions[i]);
+				forces->AddSpring(i, top_diagonal_i, structural_strength,top_rest_length); 
 
-				int conncting_index = current_index + num_points_on_circle_slice+1;
-
-
-
-				const float original_length = glm::distance(current_states->positions.at(current_index), current_states->positions.at(conncting_index));
-
-
-				forces->AddSpring(current_index, conncting_index, structural_strength, original_length);
-
-				spring_indexes.push_back(current_index);
-				spring_indexes.push_back(conncting_index);
-
-				current_index += num_points_on_circle_slice;
+				spring_indexes.emplace_back(i);
+				spring_indexes.emplace_back(top_diagonal_i);
 			}
 		}
-		
-
-		//int current_index = num_points_on_circle_slice - 1;
-		//while (current_index + 1 < GetChildrenCount() - 4) {
-
-		//	int conncting_index = current_index + 1;
-
-
-
-		//	const float original_length = glm::distance(current_states->positions.at(current_index), current_states->positions.at(conncting_index));
-		//	
-		//	forces->AddSpring(current_index, conncting_index, structural_strength, original_length);
-
-		//	spring_indexes.push_back(current_index);
-		//	spring_indexes.push_back(conncting_index);
-
-		//	current_index += num_points_on_circle_slice;
-		//	break;
-		//}
-
-
-		for (int i = 1; i < num_points_on_circle_slice; i++) {
-
-			int current_index = i;
-
-			while (current_index + num_points_on_circle_slice - 1 < current_states->positions.size() - 3) {
-
-				int conncting_index = current_index + num_points_on_circle_slice - 1;
-
-
-
-				const float original_length = glm::distance(current_states->positions.at(current_index), current_states->positions.at(conncting_index));
-
-
-				forces->AddSpring(current_index, conncting_index, structural_strength, original_length);
-
-				spring_indexes.push_back(current_index);
-				spring_indexes.push_back(conncting_index);
-
-				current_index += num_points_on_circle_slice;
-
-			}
-		}
-
 	}
 
 	void BouncyNode3D2::AddCapSprings(int cap_index, float structural_strength, int left_connected_node_index,IndexArray& spring_indexes) {
@@ -392,23 +368,13 @@ namespace GLOO {
 		
 		std::unique_ptr<ParticleState> reset_states = make_unique<ParticleState>();
 
-		std::unique_ptr<PositionArray> reset_pos = make_unique<PositionArray>();
+		std::unique_ptr<PositionArray> reset_pos = make_unique<PositionArray>(*base_positions);
+		std::unique_ptr<PositionArray> reset_vels = make_unique<PositionArray>(*base_velocities);
 
 
-		float rotation_radians = 2 * 3.14159265 / circumference_partition;
 
-		for (int i = 0; i < circumference_partition; i++) {
-
-			float current_angle = i * rotation_radians;
-
-			glm::vec3 point_position = center + glm::vec3(radius * std::cos(current_angle), radius * std::sin(current_angle), 1);
-
-			reset_states->positions.push_back(point_position);
-			reset_states->velocities.push_back(throw_speed);
-		}
-
-		reset_states->positions.push_back(center + glm::vec3(0, 0, 1));
-		reset_states->velocities.push_back(throw_speed);
+		reset_states->positions = *reset_pos;
+		reset_states->velocities = *reset_vels;
 
 
 		UpdateStates(*reset_states);
@@ -455,6 +421,25 @@ namespace GLOO {
 		}
 		ball_vertices->UpdatePositions(std::move(positions));
 
+	}
+
+	glm::vec3 BouncyNode3D2::RemovedTableVelocityComp(glm::vec3& velocity) {
+		float  projected_vector_length = glm::dot(velocity, floor_normal);
+
+		if (projected_vector_length >= 0) {
+			return velocity;
+		}
+		return velocity - projected_vector_length * floor_normal;
+	}
+	void BouncyNode3D2::SetupBasePositions() {
+		base_positions = make_unique<PositionArray>();
+		base_velocities = make_unique<PositionArray>();
+		int child_index = 0;
+		for (glm::vec3& pos : current_states->positions) {
+			base_positions->push_back(pos);
+			base_velocities->push_back(current_states->velocities.at(child_index));
+			child_index++;
+		}
 	}
 
 

@@ -33,7 +33,6 @@ namespace GLOO {
 	ParticleState BouncySystem2::ComputeTimeDerivative(const ParticleState& state, float time) const {
 
 		ParticleState new_states;
-		glm::vec3 giga_spring_force = GigaSpringForce(state);
 
 		for (int i = 0; i < state.positions.size(); i++) {
 			//if (fixed_particles.count(i) > 0) {
@@ -49,7 +48,7 @@ namespace GLOO {
 
 			const glm::vec3 g_force(0, -g * mass, 0);
 			const glm::vec3& d_force = -drag_constant * state.velocities.at(i);
-			const glm::vec3& spring_force = CalculateDampSpringForce(state, i,time);
+			const glm::vec3& spring_force = CalculateDampSpringForce(state, i, time);
 
 
 			glm::vec3& net_force = g_force + d_force + spring_force;
@@ -60,41 +59,41 @@ namespace GLOO {
 
 
 
-			glm::vec3 net_accel = net_force / mass ;
+			glm::vec3 net_accel = net_force / mass;
 
-			if (IsTouchingGround(state.positions[i]) && state.velocities[i].y < 0 ) {
+			if (IsTouchingGround(state.positions[i]) && IsMovingThroughGround(state.velocities.at(i))) {
 
-					//new_states.positions.push_back(glm::vec3(0));
-				//	
-					//glm::vec3 recalced_force(0, 0, 0);
-					//if (giga_spring_force.y > 0) {
-						//recalced_force += giga_spring_force;
-					//}
-					//else {
-						//recalced_force += FloorCompressionForce(state.positions[i]);
-					//}
-
-
-					//glm::vec3 recalced_acel = recalced_force / mass;
-
-					//new_states.velocities.push_back(recalced_acel);
-
-
-
-
-					//continue;
+				//new_states.positions.push_back(glm::vec3(0));
+			//	
+				//glm::vec3 recalced_force(0, 0, 0);
+				//if (giga_spring_force.y > 0) {
+					//recalced_force += giga_spring_force;
+				//}
+				//else {
+					//recalced_force += FloorCompressionForce(state.positions[i]);
 				//}
 
-				//new_states.positions.push_back(state.velocities.at(i));
-				//new_states.velocities.push_back(net_accel);
 
-				//glm::vec3 friction_force = CalculateFriction(mass,-g_force, state.velocities.at(i), time);
-				//net_accel += friction_force/mass;
+				//glm::vec3 recalced_acel = recalced_force / mass;
+
+				//new_states.velocities.push_back(recalced_acel);
+
+
+
+
+				//continue;
+			//}
+
+			//new_states.positions.push_back(state.velocities.at(i));
+			//new_states.velocities.push_back(net_accel);
+
+			//glm::vec3 friction_force = CalculateFriction(mass,-g_force, state.velocities.at(i), time);
+			//net_accel += friction_force/mass;
 				new_states.positions.push_back(glm::vec3(0));
 				new_states.velocities.push_back(net_accel);
 				continue;
 
-				
+
 			}
 
 			new_states.positions.push_back(state.velocities.at(i));
@@ -137,13 +136,13 @@ namespace GLOO {
 
 
 			//float dampening_constant = 2*std::pow(spring_const*particle_masses.at(parent_index),0.5);
-			float dampening_constant =64 * std::pow(spring_const * particle_masses.at(parent_index), 0.5);
+			float dampening_constant = 64 * std::pow(spring_const * particle_masses.at(parent_index), 0.5);
 
 
 			const float new_size = glm::length(distance_vector);
 			glm::vec3 extra_force = -spring_const * (new_size - rest_length) * distance_vector / new_size;
 			net_force += extra_force;
-			glm::vec3 damp_force = -dampening_constant*(new_size - rest_length) / dt * (distance_vector / new_size);
+			glm::vec3 damp_force = -dampening_constant * (new_size - rest_length) / dt * (distance_vector / new_size);
 			net_force += damp_force;
 
 		}
@@ -157,73 +156,12 @@ namespace GLOO {
 		float delta = 0.00000001;
 		glm::vec3 displacemnet_vector = pos - floor_surface_point;
 		return glm::dot(displacemnet_vector, floor_normal) <= delta;
-		
-	}
-	glm::vec3 BouncySystem2::GigaSpringForce(const ParticleState& state) const {
-
-		glm::vec3 center_pos(0, 0, 0);
-
-		for (int i = 0; i < state.positions.size(); i++) {
-			center_pos += state.positions[i];
-		}
-		center_pos = (1.0f / state.positions.size()) * center_pos;
-		float giga_constant = 900;
-		float radius = 1;
-
-		float stretch_length = center_pos.y - floor_surface_point.y;
-
-		float giga_compression =(stretch_length-radius);
-		return -floor_normal * giga_compression * giga_constant;
-
 
 	}
 
-	glm::vec3 BouncySystem2::CalculateFriction(float mass, const glm::vec3& normal_force, const  glm::vec3& velocity,float dt)const  {
-
-		float magnitude = glm::length(normal_force);
-
-
-		glm::vec3 parallel_vel_component = glm::dot(floor_normal, velocity) * floor_normal;
-
-
-		if (glm::length(velocity - parallel_vel_component) == 0) {
-			return glm::vec3(0,0,0);
-		}
-
-
-		glm::vec3& fric_direction =-glm::normalize( velocity - parallel_vel_component);
-
-		glm::vec3 max_fric_force = friction_constant * fric_direction * magnitude;
-
-
-		float max_change_vel = mass*glm::length(velocity - parallel_vel_component) / (dt);
-		glm::vec3 vel_upper_bound_force = fric_direction * max_change_vel;
-
-
-		return vel_upper_bound_force;
-
-		//return max_change_vel > magnitude ? max_fric_force : vel_upper_bound_force;
-
-
-
-
-
+	bool BouncySystem2::IsMovingThroughGround(const glm::vec3& vel)const {
+		return glm::dot(vel, floor_normal) < 0;
 	}
-
-	glm::vec3 BouncySystem2::FloorCompressionForce(const glm::vec3 particle_pos) const {
-	
-
-		float  dist_from_floor = glm::dot(particle_pos, floor_normal);
-		float delta = 0.01;
-
-
-		float compression = delta - dist_from_floor;
-
-		float giga_constant = 90000;
-
-		return giga_constant * compression * floor_normal;
-	}
-
 
 
 }  // namespace GLOO

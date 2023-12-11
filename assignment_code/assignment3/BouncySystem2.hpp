@@ -67,19 +67,12 @@ namespace GLOO {
 
 		bool IsTouchingGround(glm::vec3 pos) const;
 
-
-
-
-		glm::vec3 GigaSpringForce(const ParticleState& state) const;
-
-		glm::vec3 FloorCompressionForce(const glm::vec3 particle_pos) const;
+		bool IsMovingThroughGround(const glm::vec3& vel)const;
 
 
 		float giga_dampening = 0.90;
 
 		float friction_constant = 900;
-
-		glm::vec3 CalculateFriction(float mass,const glm::vec3& normal_force,const  glm::vec3& velocity,float dt) const ;
 
 
 	};
