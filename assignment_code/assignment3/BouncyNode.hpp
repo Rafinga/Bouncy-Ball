@@ -25,6 +25,14 @@ namespace GLOO {
 
         glm::vec3 floor_normal_;
         glm::vec3 floor_point_;
+
+        std::vector<int> collided_indices_;
+        std::vector<glm::vec3> initial_heights_;
+        std::vector<bool> falling_;
+        std::vector<bool> initial_height_set_;
+
+        float g = 9.81;
+        float coefficient_of_restitution_ = 0.9f;
     };
 }  // namespace GLOO
 
