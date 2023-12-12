@@ -29,7 +29,6 @@ namespace GLOO {
 
 
 
-		ParticleState particle_states;
 		void FlipWindActiveness() {
 
 			wind_activated = !wind_activated;

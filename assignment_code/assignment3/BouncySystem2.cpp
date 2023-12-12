@@ -140,9 +140,14 @@ namespace GLOO {
 
 
 			const float new_size = glm::length(distance_vector);
-			glm::vec3 extra_force = -spring_const * (new_size - rest_length) * distance_vector / new_size;
+			float current_length = new_size - rest_length;
+			if (abs(current_length) <= 0.00001) {
+				current_length = 0;
+			}
+
+			glm::vec3 extra_force = -spring_const * (current_length) * distance_vector / new_size;
 			net_force += extra_force;
-			glm::vec3 damp_force = -dampening_constant * (new_size - rest_length) / dt * (distance_vector / new_size);
+			glm::vec3 damp_force = -dampening_constant * (current_length) / dt * (distance_vector / new_size);
 			net_force += damp_force;
 
 		}

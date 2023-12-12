@@ -12,10 +12,10 @@
 
 namespace GLOO {
 	TableNode::TableNode(glm::vec3& center, float sidelength, glm::vec3& normal_direction):normal_direction(glm::normalize(normal_direction)) {
-		
+		float epsilon = 0.04;
 		CreateBasicTable(sidelength);
 		RotateTable();
-		GetTransform().SetPosition(center);
+		GetTransform().SetPosition(center - normal_direction * epsilon);
 	}
 
 
@@ -140,6 +140,10 @@ namespace GLOO {
 
 
 	void TableNode::RotateTable() {
+		if (normal_direction == glm::vec3(0, 1, 0)) {
+			return;
+		}
+
 		glm::vec3 default_normal(0, 1.0, 0);
 
 		glm::vec3& rot_axis = glm::normalize(glm::cross(default_normal, normal_direction));
@@ -153,6 +157,7 @@ namespace GLOO {
 
 
 	float TableNode::CalculateRotAngle() {
+
 
 		glm::vec3 default_normal(0, 1.0, 0);
 

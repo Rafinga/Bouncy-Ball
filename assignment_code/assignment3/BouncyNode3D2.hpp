@@ -60,9 +60,8 @@ namespace GLOO {
 
 
 		void AddStructuralSprings();
-		void AddFlexSprings();
 		void AddCentralSprings(IndexArray& spring_indexes);
-		void UpdateWireframe();
+		void UpdatePositions();
 
 
 		glm::vec3 RemovedTableVelocityComp(glm::vec3& velocity);
@@ -94,9 +93,70 @@ namespace GLOO {
 		glm::vec3 floor_normal;
 		glm::vec3 floor_surface_point;
 		std::shared_ptr<ShaderProgram> shader;
+		std::shared_ptr<ShaderProgram> simple_shader;
+
 
 
 		void AddVertexObject();
+		void CreateVertexNodes();
+		void CreateTriangleVertexNode();
+		void CreateSameCircleVertexNode();
+		void CreateDifferentCircleVertexNode();
+		void CreatePressureVertexNode();
+		void CreateLowerDiagonalVertexNode();
+		void CreateUpperDiagonalVertexNode();
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+		int num_children_;
+
+		bool wireframe_enabled_ = true;
+
+		bool horizontal_structurals_active_ = true;
+		bool vertical_structurals_active_ = true;
+		bool pressure_active_ = false;
+		bool bottom_diagonals_active_ = true;
+		bool top_diagonals_active_ = true;
+
+		bool triangles_enabled_ = true;
+
+		bool r_prev_released_ = false;
+		bool s_prev_released_ = false;
+		bool t_prev_released_ = false;
+
+		bool h_prev_released_ = false;
+		bool v_prev_released_ = false;
+		bool p_prev_released_ = false;
+		bool b_prev_released_ = false;
+		bool o_prev_released_ = false;
+		bool w_prev_released_ = false;
+
+		bool time_frozen_ = false;
+
+
+
+		std::shared_ptr<VertexObject> triangle_vertices;
+		std::shared_ptr<VertexObject> same_circle_vertices;
+		std::shared_ptr<VertexObject> different_circle_vertices;
+		std::shared_ptr<VertexObject> pressure_vertices;
+		std::shared_ptr<VertexObject> upper_diagonal_vertices;
+		std::shared_ptr<VertexObject> lower_diagonal_vertices;
+
+
+
 	};
 }  // namespace GLOO
 
