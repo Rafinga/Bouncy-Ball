@@ -259,9 +259,7 @@ namespace GLOO {
 
 
 	void BouncyNode3D2::UpdateStates(ParticleState& new_states) {
-		current_states->positions.clear();
 		current_states->positions = new_states.positions;
-		std::unique_ptr<PositionArray> copy_vertices = make_unique<PositionArray>(new_states.positions);
 		current_states->velocities.clear();
 		int child_index = 0;
 		for (glm::vec3& new_velocity : new_states.velocities) {
@@ -310,7 +308,7 @@ namespace GLOO {
 		
 		std::unique_ptr<IndexArray> pressure_indexes = make_unique<IndexArray>(); 
 
-		float central_stretch_constant = 0.002f;
+		float central_stretch_constant = 0.008f;
 		int center_index = current_states->positions.size() - 1;
 
 
@@ -325,14 +323,14 @@ namespace GLOO {
 	void BouncyNode3D2::AddStructuralSprings() {
 
 
-		float structural_strength = 50.0f;
+		float structural_strength = 60.0f;
 
 		std::unique_ptr<IndexArray> spring_indexes = make_unique<IndexArray>();
 
-		AddSpringsInSameCircles(structural_strength,*spring_indexes);
-		AddDifferentCircleSprings(20*structural_strength, *spring_indexes);
+		AddSpringsInSameCircles(structural_strength/2,*spring_indexes);
+		AddDifferentCircleSprings(2*structural_strength, *spring_indexes);
 		AddCentralSprings(*spring_indexes);
-		AddDiagonalSprings(0.01*structural_strength,*spring_indexes);
+		AddDiagonalSprings(5*structural_strength,*spring_indexes);
 	}
 
 
@@ -681,6 +679,11 @@ namespace GLOO {
 
 		mesh_node->CreateComponent<RenderingComponent>(triangle_vertices);
 		mesh_node->CreateComponent<ShadingComponent>(std::move(make_unique<PhongShader>()));
+		//mesh_node->CreateComponent<MaterialComponent>(std::move(make_unique<Material>()));
+
+		//mesh_node->GetComponentPtr<MaterialComponent>()->GetMaterial().SetAmbientColor(glm::vec3(0.8, 0.8, 0.8));
+		//mesh_node->GetComponentPtr<MaterialComponent>()->GetMaterial().SetDiffuseColor(glm::vec3(0.7, 0, 0));
+		//mesh_node->GetComponentPtr<MaterialComponent>()->GetMaterial().SetSpecularColor(glm::vec3(0, 0, 0.1));
 		AddChild(std::move(mesh_node));
 
 	}
@@ -754,6 +757,31 @@ namespace GLOO {
 		std::unique_ptr<PositionArray> lower_diagonal_positions = make_unique<PositionArray>(current_states->positions);
 		lower_diagonal_vertices->UpdatePositions(std::move(lower_diagonal_positions));
 
+
+
+
+		std::unique_ptr<NormalArray> normals = make_unique<NormalArray>();
+		for (int i = 0; i < current_states->positions.size(); ++i) {
+			normals->emplace_back(glm::vec3(0));
+		}
+		IndexArray triangle_indices = triangle_vertices->GetIndices();
+		for (int i = 0; i < triangle_indices.size(); i += 3) {
+			int a = triangle_indices[i];
+			int b = triangle_indices[i + 1];
+			int c = triangle_indices[i + 2];
+
+			glm::vec3 vec_ab = current_states->positions[b] - current_states->positions[a];
+			glm::vec3 vec_ac = current_states->positions[c] - current_states->positions[a];
+			glm::vec3 cross_prdct = glm::cross(vec_ab, vec_ac);
+			normals->at(a) += cross_prdct;
+			normals->at(b) += cross_prdct;
+			normals->at(c) += cross_prdct;
+		}
+		for (int i = 0; i < normals->size(); ++i) {
+			normals->at(i) = glm::normalize(normals->at(i));
+		}
+
+		//triangle_vertices->UpdateNormals(std::move(normals));
 	}
 
 	glm::vec3 BouncyNode3D2::RemovedTableVelocityComp(glm::vec3& velocity) {
@@ -762,7 +790,7 @@ namespace GLOO {
 		if (projected_vector_length >= 0) {
 			return velocity;
 		}
-		return velocity - projected_vector_length * floor_normal;
+		return velocity - 2*projected_vector_length * floor_normal;
 	}
 	void BouncyNode3D2::SetupBasePositions() {
 		base_positions = make_unique<PositionArray>();

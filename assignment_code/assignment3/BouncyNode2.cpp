@@ -48,9 +48,9 @@ namespace GLOO {
 			if (!stop_pressed) {
 				ParticleState& new_states = integrator->Integrate(*forces, *current_states, start_time, dt);
 				UpdateStates(new_states);
-				start_time += dt;
 				UpdateSystem();
 			}
+			start_time += dt;
 
 
 			if (InputManager::GetInstance().IsKeyPressed('R')) {
@@ -64,15 +64,12 @@ namespace GLOO {
 
 			}
 
+		}
+		if (InputManager::GetInstance().IsKeyPressed('S')) {
+			stop_pressed = !stop_pressed;
+		}
 
-			if (InputManager::GetInstance().IsKeyPressed('S')) {
-				stop_pressed = true;
-			}
-
-			if (InputManager::GetInstance().IsKeyReleased('S')) {
-				stop_pressed = false;
-
-			}
+		else if (InputManager::GetInstance().IsKeyReleased('S')) {
 
 		}
 	}
@@ -173,7 +170,7 @@ namespace GLOO {
 	void BouncyNode2::AddCentralSprings() {
 
 
-		float central_stretch_constant = 0.002;
+		float central_stretch_constant = 0.0002;
 
 		for (int i = 0; i < circumference_partition; i++) {
 			forces->AddSpring(circumference_partition,i, central_stretch_constant, radius);

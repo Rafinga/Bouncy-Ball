@@ -63,32 +63,6 @@ namespace GLOO {
 
 			if (IsTouchingGround(state.positions[i]) && IsMovingThroughGround(state.velocities.at(i))) {
 
-				//new_states.positions.push_back(glm::vec3(0));
-			//	
-				//glm::vec3 recalced_force(0, 0, 0);
-				//if (giga_spring_force.y > 0) {
-					//recalced_force += giga_spring_force;
-				//}
-				//else {
-					//recalced_force += FloorCompressionForce(state.positions[i]);
-				//}
-
-
-				//glm::vec3 recalced_acel = recalced_force / mass;
-
-				//new_states.velocities.push_back(recalced_acel);
-
-
-
-
-				//continue;
-			//}
-
-			//new_states.positions.push_back(state.velocities.at(i));
-			//new_states.velocities.push_back(net_accel);
-
-			//glm::vec3 friction_force = CalculateFriction(mass,-g_force, state.velocities.at(i), time);
-			//net_accel += friction_force/mass;
 				new_states.positions.push_back(glm::vec3(0));
 				new_states.velocities.push_back(net_accel);
 				continue;
@@ -141,13 +115,13 @@ namespace GLOO {
 
 			const float new_size = glm::length(distance_vector);
 			float current_length = new_size - rest_length;
-			if (abs(current_length) <= 0.00001) {
+			if (abs(current_length) <= 0.001) {
 				current_length = 0;
 			}
 
 			glm::vec3 extra_force = -spring_const * (current_length) * distance_vector / new_size;
 			net_force += extra_force;
-			glm::vec3 damp_force = -dampening_constant * (current_length) / dt * (distance_vector / new_size);
+			glm::vec3 damp_force = -dampening_constant * (current_length) / (1*dt) * (distance_vector / new_size);
 			net_force += damp_force;
 
 		}

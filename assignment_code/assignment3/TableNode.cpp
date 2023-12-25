@@ -12,7 +12,7 @@
 
 namespace GLOO {
 	TableNode::TableNode(glm::vec3& center, float sidelength, glm::vec3& normal_direction):normal_direction(glm::normalize(normal_direction)) {
-		float epsilon = 0.04;
+		float epsilon = 0.01;
 		CreateBasicTable(sidelength);
 		RotateTable();
 		GetTransform().SetPosition(center - normal_direction * epsilon);

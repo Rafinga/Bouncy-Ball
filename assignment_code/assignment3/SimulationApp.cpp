@@ -18,6 +18,10 @@
 #include "ForwardEulerIntegrator.hpp"
 #include "TrapezoidalIntegrator.hpp"
 #include "BouncyNode.hpp"
+#include "BouncyNode2.hpp"
+
+#include "BouncyNode3D2.hpp"
+
 #include "TableNode.hpp"
 
 
@@ -57,23 +61,52 @@ namespace GLOO {
         root.AddChild(std::move(point_light_node));
 
 
-        glm::vec3 center(1, 1, 0);
-        float radius(1.0f);
-        int n = 20;
+        glm::vec3 center(-2, 20, 0);
+        float radius(3.0f);
+        int n = 32;
+        glm::vec3 table_surface(0, -1, 0);
+        glm::vec3 normal_direction(glm::normalize(glm::vec3(1,1,0)));
+        glm::vec3 throw_speed(0, -10, 0);
 
         //glm::vec3 floor_normal(0, 1, 0);
         //glm::vec3 floor_point(0, -1, 0) // Maybe allow passing these in to BouncyNode
 
-        std::unique_ptr<BouncyNode> circle_bouncy_node = make_unique<BouncyNode>(
-            std::move(IntegratorFactory::CreateIntegrator<BouncySystem, ParticleState>(integrator_type_)),
+
+
+        std::unique_ptr<BouncyNode3D2> circle_bouncy_node = make_unique<BouncyNode3D2>(
+            std::move(IntegratorFactory::CreateIntegrator<BouncySystem2, ParticleState>(integrator_type_)),
             integration_step_,
-            center, radius, n
+            center, radius, n, normal_direction,table_surface, throw_speed
         );
         root.AddChild(std::move(circle_bouncy_node)); 
 
+        //std::unique_ptr<BouncyNode2> circle_bouncy_node = make_unique<BouncyNode2>(
+        //    std::move(IntegratorFactory::CreateIntegrator<BouncySystem2, ParticleState>(integrator_type_)),
+        //    integration_step_,
+        //    center, radius, n, throw_speed
+        //);
+        //root.AddChild(std::move(circle_bouncy_node));
 
-        std::unique_ptr<TableNode> table_node = make_unique<TableNode>(center, 2, glm::vec3(-1, 1, 0.0));
+
+
+        std::unique_ptr<TableNode> table_node = make_unique<TableNode>(table_surface, 2000, normal_direction);
+
+
+
 
         root.AddChild(std::move(table_node));
+
+
+        std::unique_ptr<SceneNode> light_node = make_unique<SceneNode>();
+        std::unique_ptr<PointLight> lighting = make_unique<PointLight>();
+
+        lighting->SetAttenuation(glm::vec3(0.04,0.04,0.04));
+        light_node->CreateComponent<LightComponent>(std::move(lighting));
+
+        light_node->GetTransform().SetPosition(glm::vec3(6,1,3));
+
+        root.AddChild(std::move(light_node));
+
+
     }
 }  // namespace GLOO
