@@ -20,20 +20,23 @@
 
 
 namespace GLOO {
-	BouncyNode3D::BouncyNode3D(std::unique_ptr<IntegratorBase<BouncySystem, ParticleState>> integrator,
-		//BouncyNode3D::BouncyNode3D(std::unique_ptr<IntegratorBase<BouncySystem2, ParticleState>> integrator,
-		double integration_step,
-		glm::vec3 center, float radius, int n)
+	//BouncyNode3D::BouncyNode3D(std::unique_ptr<IntegratorBase<BouncySystem, ParticleState>> integrator,
+	BouncyNode3D::BouncyNode3D(std::unique_ptr<IntegratorBase<BouncySystem2, ParticleState>> integrator,
+		double dt,
+		glm::vec3 center, float radius, int n,
+		glm::vec3 floor_point, glm::vec3 floor_normal,
+		glm::vec3 initial_velocity
+	)
 		: integrator_(std::move(integrator))
 	{
 
-		current_time_ = 0.0;
-		time_left_over_ = 0.0;
-		integration_step_ = integration_step;
+		start_time_ = 0.0;
+		total_time_elapsed_ = 0.0;
+		dt_ = dt;
 		std::vector<float> masses;
 
-		floor_normal_ = glm::vec3(0, 1, 0);
-		floor_point_ = glm::vec3(0, -1, 0);
+		floor_normal_ = floor_normal;
+		floor_point_ = floor_point;
 
 		float rotation_radians = 2 * 3.14159265 / (float)n;
 		float cos_angle = cos(rotation_radians);
@@ -51,7 +54,8 @@ namespace GLOO {
 			glm::vec3 rotated_point = circle_rotation_matrix * current_point;
 			if (i != n / 2 - 1) {
 				state_.positions.emplace_back(rotated_point);
-				state_.velocities.emplace_back(glm::vec3(0));
+				state_.velocities.emplace_back(initial_velocity);
+				initial_velocities_.emplace_back(initial_velocity);
 				system_.AddParticle(1.0f);
 			}
 			current_point = rotated_point;
@@ -64,21 +68,25 @@ namespace GLOO {
 			for (int j = current_size - (n - 2); j < current_size; ++j) {
 				glm::vec3 rotated_point = sphere_rotation_matrix * state_.positions[j];
 				state_.positions.emplace_back(rotated_point);
-				state_.velocities.emplace_back(glm::vec3(0));
+				state_.velocities.emplace_back(initial_velocity);
+				initial_velocities_.emplace_back(initial_velocity);
 				system_.AddParticle(1.0f);
 			}
 		}
 
 		state_.positions.emplace_back(glm::vec3(0, radius, 0));  // Add the top point of the sphere.
-		state_.velocities.emplace_back(glm::vec3(0));
+		state_.velocities.emplace_back(initial_velocity);
+		initial_velocities_.emplace_back(initial_velocity);
 		system_.AddParticle(1.0f);
 
 		state_.positions.emplace_back(glm::vec3(0, -radius, 0));  // Add the bottom point of the sphere.
-		state_.velocities.emplace_back(glm::vec3(0));
+		state_.velocities.emplace_back(initial_velocity);
+		initial_velocities_.emplace_back(initial_velocity);
 		system_.AddParticle(1.0f);
 
 		state_.positions.emplace_back(glm::vec3(0, 0, 0));  // Add the center-point of the sphere.
-		state_.velocities.emplace_back(glm::vec3(0));
+		state_.velocities.emplace_back(initial_velocity);
+		initial_velocities_.emplace_back(initial_velocity);
 		system_.AddParticle(1.0f);
 
 
@@ -89,7 +97,7 @@ namespace GLOO {
 			if ((i % num_points_on_circle) == n / 2 - 2 || (i % num_points_on_circle) == num_points_on_circle - 1) continue;
 
 			float rest_length = glm::length(state_.positions[i + 1] - state_.positions[i]);
-			system_.AddSpring(i, i + 1, rest_length, 1000);  // Structural springs ("downwards" along a single circle)
+			system_.AddSpring(i, i + 1, rest_length, 50);  // Structural springs ("downwards" along a single circle)
 
 			vertical_structural_indices_.emplace_back(i);  // Render "vertical" structural springs
 			vertical_structural_indices_.emplace_back(i + 1);
@@ -99,8 +107,8 @@ namespace GLOO {
 		int top_point_index = state_.positions.size() - 3;
 		float top_rest_length = glm::length(state_.positions[top_point_index] - state_.positions[0]);
 		for (int i = 0; i < state_.positions.size() - 3; i = i + num_points_on_circle) {
-			system_.AddSpring(top_point_index, i, top_rest_length, 1000);  // Same structural springs for top point
-			system_.AddSpring(top_point_index, i + n - 3, top_rest_length, 1000);
+			system_.AddSpring(top_point_index, i, top_rest_length, 50);  // Same structural springs for top point
+			system_.AddSpring(top_point_index, i + n - 3, top_rest_length, 50);
 
 			vertical_structural_indices_.emplace_back(top_point_index);
 			vertical_structural_indices_.emplace_back(i);
@@ -113,8 +121,8 @@ namespace GLOO {
 		int bottom_point_index = state_.positions.size() - 2;
 		float bottom_rest_length = glm::length(state_.positions[bottom_point_index] - state_.positions[num_points_on_circle / 2 - 1]);
 		for (int i = n / 2 - 2; i < state_.positions.size() - 3; i = i + num_points_on_circle) {
-			system_.AddSpring(bottom_point_index, i, bottom_rest_length, 1000);  // Same structural springs for bottom point
-			system_.AddSpring(bottom_point_index, i + 1, bottom_rest_length, 1000);
+			system_.AddSpring(bottom_point_index, i, bottom_rest_length, 50);  // Same structural springs for bottom point
+			system_.AddSpring(bottom_point_index, i + 1, bottom_rest_length, 50);
 
 			vertical_structural_indices_.emplace_back(bottom_point_index);
 			vertical_structural_indices_.emplace_back(i);
@@ -133,7 +141,7 @@ namespace GLOO {
 			}
 
 			float rest_length = glm::length(state_.positions[next_i] - state_.positions[i]);
-			system_.AddSpring(i, next_i, rest_length, 1000);
+			system_.AddSpring(i, next_i, rest_length, 1000.0);
 
 			horizontal_structural_indices_.emplace_back(i);  // Render "horizontal" structural springs
 			horizontal_structural_indices_.emplace_back(next_i);
@@ -142,7 +150,7 @@ namespace GLOO {
 		// Pressure springs
 		for (int i = 0; i < state_.positions.size() - 3; ++i) {
 			float rest_length = radius;
-			system_.AddSpring(i, state_.positions.size() - 1, rest_length, 1000);
+			system_.AddSpring(i, state_.positions.size() - 1, rest_length, 0.02);
 
 			pressure_indices_.emplace_back(i);
 			pressure_indices_.emplace_back(state_.positions.size() - 1);  // Render presure springs
@@ -159,7 +167,7 @@ namespace GLOO {
 					bottom_diagonal_i = num_points_on_circle - 1 - (bottom_diagonal_i % num_points_on_circle);
 				}
 				float bottom_rest_length = glm::length(state_.positions[bottom_diagonal_i] - state_.positions[i]);
-				system_.AddSpring(i, bottom_diagonal_i, bottom_rest_length, 1000);  //
+				system_.AddSpring(i, bottom_diagonal_i, bottom_rest_length, 0.5);  //
 
 				bottom_diagonal_structural_indices_.emplace_back(i);
 				bottom_diagonal_structural_indices_.emplace_back(bottom_diagonal_i);
@@ -174,7 +182,7 @@ namespace GLOO {
 					top_diagonal_i = num_points_on_circle - 1 - (top_diagonal_i % num_points_on_circle);
 				}
 				float top_rest_length = glm::length(state_.positions[top_diagonal_i] - state_.positions[i]);
-				system_.AddSpring(i, top_diagonal_i, top_rest_length, 1000);  //
+				system_.AddSpring(i, top_diagonal_i, top_rest_length, 0.5);  //
 
 				top_diagonal_structural_indices_.emplace_back(i);
 				top_diagonal_structural_indices_.emplace_back(top_diagonal_i);
@@ -419,7 +427,7 @@ namespace GLOO {
 
 		AddChild(std::move(top_diagonal_node));
 
-		num_of_children_ = GetChildrenCount();
+		num_children_ = GetChildrenCount();
 		std::cout << 3 << std::endl;
 	}
 
@@ -428,7 +436,7 @@ namespace GLOO {
 		//		'R' -> Reset to initial state
 		//		'S' -> Stop (freeze) time
 		//		'T' -> Toggles triangles
-		
+
 		//		'H' -> Toggles horizontal structural springs
 		//		'V' -> Toggles vertical structural springs
 		//		'P' -> Toggles pressure springs
@@ -436,8 +444,10 @@ namespace GLOO {
 		//		'O' -> Toggles top-diagonal structural springs
 		//		'W' -> Toggles entire wireframe of springs
 
+
+		// Keybind logic
 		if (InputManager::GetInstance().IsKeyPressed('T')) {
-			SceneNode& triangles_node = GetChild(num_of_children_ - 6);
+			SceneNode& triangles_node = GetChild(num_children_ - 6);
 
 			if (t_prev_released_) {
 				if (triangles_enabled_) {
@@ -456,7 +466,7 @@ namespace GLOO {
 		}
 
 		if (InputManager::GetInstance().IsKeyPressed('H')) {
-			SceneNode& horizontal_node = GetChild(num_of_children_ - 5);
+			SceneNode& horizontal_node = GetChild(num_children_ - 5);
 
 			if (h_prev_released_ && wireframe_enabled_) {
 				if (horizontal_structurals_active_) {
@@ -475,7 +485,7 @@ namespace GLOO {
 		}
 
 		if (InputManager::GetInstance().IsKeyPressed('V')) {
-			SceneNode& vertical_node = GetChild(num_of_children_ - 4);
+			SceneNode& vertical_node = GetChild(num_children_ - 4);
 
 			if (v_prev_released_ && wireframe_enabled_) {
 				if (vertical_structurals_active_) {
@@ -494,7 +504,7 @@ namespace GLOO {
 		}
 
 		if (InputManager::GetInstance().IsKeyPressed('P')) {
-			SceneNode& pressure_node = GetChild(num_of_children_ - 3);
+			SceneNode& pressure_node = GetChild(num_children_ - 3);
 
 			if (p_prev_released_ && wireframe_enabled_) {
 				if (pressure_active_) {
@@ -513,7 +523,7 @@ namespace GLOO {
 		}
 
 		if (InputManager::GetInstance().IsKeyPressed('B')) {
-			SceneNode& bottom_diagonal_node = GetChild(num_of_children_ - 2);
+			SceneNode& bottom_diagonal_node = GetChild(num_children_ - 2);
 
 			if (b_prev_released_ && wireframe_enabled_) {
 				if (bottom_diagonals_active_) {
@@ -532,7 +542,7 @@ namespace GLOO {
 		}
 
 		if (InputManager::GetInstance().IsKeyPressed('O')) {
-			SceneNode& top_diagonal_node = GetChild(num_of_children_ - 1);
+			SceneNode& top_diagonal_node = GetChild(num_children_ - 1);
 
 			if (o_prev_released_ && wireframe_enabled_) {
 				if (top_diagonals_active_) {
@@ -551,12 +561,11 @@ namespace GLOO {
 		}
 
 		if (InputManager::GetInstance().IsKeyPressed('W')) {
-			/*SceneNode& wireframe_node = GetChild(num_of_children_ - 1);*/
-			SceneNode& horizontal_node = GetChild(num_of_children_ - 5);
-			SceneNode& vertical_node = GetChild(num_of_children_ - 4);
-			SceneNode& pressure_node = GetChild(num_of_children_ - 3);
-			SceneNode& bottom_diagonal_node = GetChild(num_of_children_ - 2);
-			SceneNode& top_diagonal_node = GetChild(num_of_children_ - 1);
+			SceneNode& horizontal_node = GetChild(num_children_ - 5);
+			SceneNode& vertical_node = GetChild(num_children_ - 4);
+			SceneNode& pressure_node = GetChild(num_children_ - 3);
+			SceneNode& bottom_diagonal_node = GetChild(num_children_ - 2);
+			SceneNode& top_diagonal_node = GetChild(num_children_ - 1);
 
 			if (w_prev_released_) {
 				if (wireframe_enabled_) {
@@ -577,86 +586,119 @@ namespace GLOO {
 				}
 			}
 			w_prev_released_ = false;
-		} else if (InputManager::GetInstance().IsKeyReleased('W')) {
+		}
+		else if (InputManager::GetInstance().IsKeyReleased('W')) {
 			w_prev_released_ = true;
 		}
 
+		total_time_elapsed_ += delta_time;
 
-		////std::cout << 4 << std::endl;
-		//double time_after_steps = current_time_ + delta_time + time_left_over_;
-		//while (current_time_ + integration_step_ <= time_after_steps) {
-		//	state_ = integrator_->Integrate(system_, state_, current_time_, integration_step_);
-		//	current_time_ += integration_step_;
-		//}
-		//time_left_over_ = time_after_steps - current_time_;
+		if (InputManager::GetInstance().IsKeyPressed('S')) {
+			if (s_prev_released_) {
 
-		//std::unique_ptr<PositionArray> new_vertex_positions = make_unique<PositionArray>();
-		//for (int i = 0; i < state_.positions.size(); i++) {
-		//	glm::vec3 updated_particle_pos = state_.positions[i];
+				time_frozen_ = !time_frozen_;
+			}
+			s_prev_released_ = false;
+		}
+		else if (InputManager::GetInstance().IsKeyReleased('S')) {
+			s_prev_released_ = true;
+		}
 
-		//	//float epsilon = 0.000001f;
-		//	//if (glm::length(state_.velocities[i]) <= epsilon) {
-		//	//	std::cout << "odd!!!" << std::endl; // 
-		//	//	initial_heights_[i] = updated_particle_pos;
-		//	//}
+		// Actual Update Logic
+		while (start_time_ + dt_ < total_time_elapsed_) {
 
-		//	//if (state_.velocities[i].y > 0) {
-		//	//	falling_[i] = false;
-		//	//}
-		//	//else if (!initial_height_set_[i]) {
-		//	//	if (state_.positions[i].y - floor_point_.y > 0.00001) {
-		//	//		std::cout << "yay!!! " << state_.positions[i].y << " " << state_.positions[i].y << " " << (state_.positions[i].y > floor_point_.y) << std::endl;
-		//	//	}
-		//	//	initial_heights_[i] = updated_particle_pos;
-		//	//	initial_height_set_[i] = true;
-		//	//}
+			if (!time_frozen_) {
+				ParticleState& new_states = integrator_->Integrate(system_, state_, start_time_, dt_);
+				UpdateStates(new_states);
+			}
 
-		//	//float epsilon = 0.000001f;
-		//	glm::vec3 floor_to_pos_vec = updated_particle_pos - floor_point_;
-		//	float plane_dot_prdct = glm::dot(floor_normal_, floor_to_pos_vec);
+			start_time_ += dt_;
+			if (InputManager::GetInstance().IsKeyPressed('R')) {
+				if (r_prev_released_) {
+					ResetSystem();
+				}
+				r_prev_released_ = false;
+			}
+			else if (InputManager::GetInstance().IsKeyReleased('R')) {
+				r_prev_released_ = true;
+			}
+		}
+	}
 
-		//	//if (collided_indices_[i] > 1) {
-		//	//	//std::cout << "bruh... " << i << std::endl;
-		//	//	collided_indices_[i] -= 1;
-		//	//}
-		//	//else if (collided_indices_[i]) {
-		//	//	collided_indices_[i] = 0;
-		//	//	system_.IndexUncollided(i);
-		//	//}
-		//	//if (collided_indices_[i]) {
-		//	//	collided_indices_[i] = 0; //
-		//	//	system_.IndexUncollided(i);
-		//	//}
+	void BouncyNode3D::UpdateStates(ParticleState& new_states) {
+		state_.positions = new_states.positions;
+		state_.velocities.clear();
+		int child_index = 0;
+		for (glm::vec3& new_velocity : new_states.velocities) {
+			//if (IsTouchingGround(state_.positions[child_index])) {
+			//	new_velocity = RemovedTableVelocityComp(new_velocity);
+			//}
+			state_.velocities.push_back(new_velocity);
 
-		//	//float epsilon = 0.000001f;
-		//	//float epsilon = 1.0f;
-		//	if (plane_dot_prdct <= 0) {
-		//		//std::cout << "here" << std::endl;
-		//		state_.positions[i].y = floor_point_.y; // TODO: Maybe generalize this to inclined surfaces
+			child_index++;
+		}
+	}
 
-		//		//glm::vec3 velocity_before_bounce = glm::vec3(0, sqrt(2 * g * (initial_heights_[i].y - floor_point_.y)), 0); // 
+	bool BouncyNode3D::IsTouchingGround(glm::vec3 pos) const {
+		float delta = 0.00000001;
+		glm::vec3 displacement_vector = pos - floor_point_;
+		return glm::dot(displacement_vector, floor_normal_) <= delta;
+	}
 
-		//		//glm::vec3 velocity_before_bounce = state_.velocities[i];
-		//		//state_.velocities[i] = coefficient_of_restitution_ * velocity_before_bounce;
-		//		//std::cout << "here...?" << std::endl;
-		//		state_.velocities[i] = glm::vec3(0);
-		//		//std::cout << "bruh.... " << g << " " << initial_heights_[i].y - floor_point_.y << " " << 2 * g * (initial_heights_[i].y - floor_point_.y) << " " << sqrt(2 * g * (initial_heights_[i].y - floor_point_.y)) << " " << glm::to_string(state_.velocities[i]) << std::endl;
-		//		//state_.velocities[i] = glm::vec3(0);
-		//		//system_.IndexCollided(i);
-		//		//collided_indices_[i] = 1;
+	glm::vec3 BouncyNode3D::RemovedTableVelocityComp(glm::vec3& velocity) {
+		float  projected_vector_length = glm::dot(velocity, floor_normal_);
 
-		//		//initial_height_set_[i] = false;
-		//	}
+		if (projected_vector_length >= 0) {
+			return velocity;
+		}
+		return velocity - projected_vector_length * floor_normal_;
+	}
 
-		//	//std::cout << 5 << std::endl;
-		//	new_vertex_positions->emplace_back(updated_particle_pos);
-		//	Transform& node_transform = GetChild(i).GetTransform();
-		//	node_transform.SetPosition(updated_particle_pos);
-		//}
-		//std::cout << 6 << std::endl;
-		//VertexObject* line_segment_vertex_obj =
-		//	GetChild(state_.positions.size()).GetComponentPtr<RenderingComponent>()->GetVertexObjectPtr();  //
-		//line_segment_vertex_obj->UpdatePositions(std::move(new_vertex_positions));
-		//std::cout << "finished!" << std::endl;
+	void BouncyNode3D::ResetSystem() {
+		ParticleState reset_state;
+
+		PositionArray reset_pos = sphere_positions_;
+		PositionArray reset_vels = initial_velocities_;
+
+		reset_state.positions = reset_pos;
+		reset_state.velocities = reset_vels;
+
+		UpdateStates(reset_state);
+	}
+
+	void BouncyNode3D::UpdateVertexObjectPositions(int child_idx) {
+		// child_idx represents how many child-nodes from the last child-node in the tree
+		VertexObject* vertex_obj = GetChild(num_children_ - child_idx).GetComponentPtr<RenderingComponent>()->GetVertexObjectPtr();
+		std::unique_ptr<PositionArray> vertex_positions = make_unique<PositionArray>(state_.positions);
+
+		vertex_obj->UpdatePositions(std::move(vertex_positions));
+	}
+
+	void BouncyNode3D::UpdateActiveVertexObjectPositions() {
+		if (triangles_enabled_) {
+			UpdateVertexObjectPositions(6);
+		}
+
+		if (wireframe_enabled_) {
+			if (horizontal_structurals_active_) {
+				UpdateVertexObjectPositions(5);
+			}
+
+			if (vertical_structurals_active_) {
+				UpdateVertexObjectPositions(4);
+			}
+
+			if (pressure_active_) {
+				UpdateVertexObjectPositions(3);
+			}
+
+			if (bottom_diagonals_active_) {
+				UpdateVertexObjectPositions(2);
+			}
+
+			if (top_diagonals_active_) {
+				UpdateVertexObjectPositions(1);
+			}
+		}
 	}
 }
